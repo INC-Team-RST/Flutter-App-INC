@@ -1,50 +1,96 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:darkknightspict/api/user_api.dart';
 import 'package:darkknightspict/models/admin_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
-import '../models/user.dart';
 
 class SignIn {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<bool> signInWithGoogleUser() async {
-    late final bool isNewUser;
+  Future<String> signInWithGoogleUser() async {
+    //bool isNewUser = true; //assuming its a new user
     try {
       UserCredential userCredential;
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication googleAuth =
           await googleUser!.authentication;
+
       final googleAuthCredential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
       userCredential = await _auth.signInWithCredential(googleAuthCredential);
-      isNewUser = userCredential.additionalUserInfo!.isNewUser;
+      log(userCredential.user!.uid.toString());
 
-      if (isNewUser) {
-        storeUserDetails();
-      }
-
-      await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(_auth.currentUser!.uid)
-          .get()
-          .then((user) {
-        LocalUser.uid = user['uid'];
-        LocalUser.email = user['email'];
-        LocalUser.displayName = user['displayName'];
-        LocalUser.photoURL = user['photoURL'];
-        LocalUser.isCA = user['isCA'];
-        LocalUser.caId = user['caId'] ?? '';
-      });
-      return isNewUser;
+      checkUser(uid: userCredential.user!.uid).then((value) => {
+            log('value $value'),
+            print(value==false),
+            if (value) //user does exist
+              {
+                loginUser(
+                    uid: userCredential.user!.uid,
+                    token: googleAuth.accessToken!),
+                Fluttertoast.showToast(
+                    msg: "Login Successful",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    fontSize: 16.0),
+              }
+            else if (!value)//user doesnt exist
+              {  
+                log('user doesnt exist'),
+                addUser(
+                    accessToken: googleAuth.accessToken!,
+                    email: userCredential.user!.email!,
+                    name: userCredential.user!.displayName!,
+                    uid: userCredential.user!.uid,
+                    phone: userCredential.user!.phoneNumber!,
+                    photoURL: userCredential.user!.photoURL!),
+                Fluttertoast.showToast(
+                    msg: "Login Successful, user added",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    fontSize: 16.0),  
+              }
+          });
+      log(googleAuth.accessToken.toString());
+      return googleAuth.accessToken!;
     } catch (e) {
+      Fluttertoast.showToast(
+          msg: "Login Failed",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          fontSize: 16.0);
       log(e.toString());
-      return false;
+      return "";
     }
+
+    // isNewUser = userCredential.additionalUserInfo!.isNewUser;
+
+    // if (isNewUser) {
+    //   storeUserDetails();
+    // }
+
+    // await FirebaseFirestore.instance
+    //     .collection('Users')
+    //     .doc(_auth.currentUser!.uid)
+    //     .get()
+    //     .then((user) {
+    //   LocalUser.uid = user['uid'];
+    //   LocalUser.email = user['email'];
+    //   LocalUser.displayName = user['displayName'];
+    //   LocalUser.photoURL = user['photoURL'];
+    //   LocalUser.isCA = user['isCA'];
+    //   LocalUser.caId = user['caId'] ?? '';
+    // });
+    //log(isNewUser.toString());
+    //return isNewUser;
   }
 
   Future<void> storeUserDetails() async {

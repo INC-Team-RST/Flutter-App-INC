@@ -42,7 +42,7 @@ class _NavDrawerState extends State<NavDrawer> {
             const SizedBox(
               width: double.infinity,
               child: Text(
-                "CLOUD ACCOUNTING",
+                "CLIENT-HIVE",
                 style: TextStyle(
                     fontFamily: 'Lato', fontSize: 37, color: Colors.deepPurple),
               ),

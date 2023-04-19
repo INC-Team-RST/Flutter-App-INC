@@ -1,16 +1,18 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:darkknightspict/features/login/widgets/select_ca_widget.dart';
+import 'package:darkknightspict/features/login/widgets/select_admin.dart';
 import 'package:flutter/material.dart';
 
 import '../../project/bottombar_admin.dart';
-import '../../project/bottombar.dart';
 import '../../services/google_signin.dart';
+import 'dart:developer';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    //  ApiUser user = ApiUser();
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -51,7 +53,7 @@ class LoginScreen extends StatelessWidget {
                           AnimatedTextKit(
                             animatedTexts: [
                               TypewriterAnimatedText(
-                                "Cloud Accounting",
+                                "Client-Hive",
                                 speed: const Duration(milliseconds: 150),
                                 textStyle: const TextStyle(
                                     fontSize: 30,
@@ -66,7 +68,7 @@ class LoginScreen extends StatelessWidget {
                           const Padding(
                             padding: EdgeInsets.all(18.0),
                             child: Text(
-                              "\"An efficient and easy CA-Client interaction android application\"",
+                              "\"Share files, not headaches! Connect, Collaborate and Communicate with your Clients seamlessly.\"",
                               style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: 'Lato',
@@ -84,31 +86,33 @@ class LoginScreen extends StatelessWidget {
                                 color: const Color(0xff010413),
                                 borderRadius: BorderRadius.circular(25)),
                             child: InkWell(
-                              onTap: () {
-                                SignIn()
-                                    .signInWithGoogleUser()
-                                    .then((isNewUser) => {
-                                          if (!isNewUser)
-                                            {
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const BottomBar(),
-                                                ),
-                                              ),
-                                            }
-                                          else
-                                            {
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const SelectCA(),
-                                                ),
-                                              ),
-                                            }
-                                        });
+                              onTap: () async {
+                                String token =
+                                    await SignIn().signInWithGoogleUser();
+                                  log(token);
+                                // .then((isNewUser) => {
+                                //       if (!isNewUser)
+                                //         {
+
+                                //           Navigator.pushReplacement(
+                                //             context,
+                                //             MaterialPageRoute(
+                                //               builder: (context) =>
+                                //                   const BottomBar(),
+                                //             ),
+                                //           ),
+                                //         }
+                                //       else
+                                //         {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SelectAdmin(token: token),
+                                  ),
+                                );
+                                // }
+                                // });
                               },
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,

@@ -6,4 +6,5 @@ class AdminInfo {
   static String? photoURL;
   static bool? isCA;
   static String? email;
+  
 }
