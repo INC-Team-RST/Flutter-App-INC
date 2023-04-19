@@ -46,6 +46,7 @@ class _ChatHomeState extends State<ChatHome> {
               log('Logout button pressed');
               String? token= await storage.read(key: 'admin_access_token');
               await adminlogout(token!);
+              await storage.delete(key: 'user_type');
               await GoogleSignIn().signOut();
               await FirebaseAuth.instance.signOut();
               if (!mounted) return;

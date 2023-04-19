@@ -91,26 +91,29 @@ Future<List<AdminData>> getAdmin(String token) async {
   }
 }
 
-Future<void> userlogout(String accessToken) async{
-   
+Future<void> userlogout(String accessToken) async {
   dio.options.headers['content-Type'] = 'application/json';
-  dio.options.headers['Authorization']='Bearer $accessToken';
-  try{
-    Response response = await dio.post('https://client-hive.onrender.com/api/user/logout', data: {"token": accessToken});
+  dio.options.headers['Authorization'] = 'Bearer $accessToken';
+  try {
+    Response response = await dio.post(
+        'https://client-hive.onrender.com/api/user/logout',
+        data: {"token": accessToken});
     log(response.toString());
-  } catch(e){
+  } catch (e) {
     log(e.toString());
   }
 }
 
-Future<List<AdminData>> getAllAdmins(String profession, String accessToken) async {
-  dio.options.headers['Authorization']='Bearer $accessToken';
+Future<List<AdminData>> getAllAdmins(
+    String profession, String accessToken) async {
+  dio.options.headers['Authorization'] = 'Bearer $accessToken';
   dio.options.headers['content-Type'] = 'application/json';
   List<AdminData> admins = [];
   try {
     Response response = await dio.post(
-        'https://client-hive.onrender.com/api/user/admins/all', data: {"profession": profession});
-     
+        'https://client-hive.onrender.com/api/user/admins/all',
+        data: {"profession": profession});
+
     for (var data in response.data) {
       AdminData admin = AdminData(
         id: data['id'],
@@ -124,10 +127,21 @@ Future<List<AdminData>> getAllAdmins(String profession, String accessToken) asyn
       admins.add(admin);
     }
     return admins;
-
   } catch (e) {
     log(e.toString());
     throw Exception(e);
-    
+  }
+}
+
+Future<void> addAdminData(int id, String token) async {
+  try {
+     dio.options.headers['Authorization'] = 'Bearer $token';
+    dio.options.headers['content-Type'] = 'application/json';
+    Response response = await dio.post(
+        'https://client-hive.onrender.com/api/user/admins',
+        data: {"id": id});
+    log(response.toString());
+  } catch (e) {
+    log(e.toString());
   }
 }

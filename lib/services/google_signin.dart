@@ -58,7 +58,9 @@ class SignIn {
             fontSize: 16.0);
       }
       log(googleAuth.accessToken.toString());
-      await storage.write(key: 'user_access_token', value: googleAuth.accessToken!);
+      await storage.write(
+          key: 'user_access_token', value: googleAuth.accessToken!);
+      await storage.write(key: 'user_type', value: 'user');
       return googleAuth.accessToken!;
     } catch (e) {
       Fluttertoast.showToast(
@@ -146,9 +148,10 @@ class SignIn {
       userCredential = await _auth.signInWithCredential(googleAuthCredential);
       //isNewUser = userCredential.additionalUserInfo!.isNewUser;
       log(userCredential.user!.uid.toString());
-
+      log(googleAuth.accessToken.toString());
       await storage.write(
           key: 'admin_access_token', value: googleAuth.accessToken!);
+      await storage.write(key: 'user_type', value: 'admin');
 
       bool check = await checkAdmin(userCredential.user!.uid);
 

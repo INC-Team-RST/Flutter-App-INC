@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'dart:developer';
 import '../features/login/login.dart';
 import 'developers.dart';
 final storage= const FlutterSecureStorage();
@@ -128,8 +128,10 @@ class _NavDrawerState extends State<NavDrawer> {
                         title: 'Signout?',
                         desc: 'Do you really want to signout?',
                         btnOkOnPress: () async {
-                          String? token= await storage.read(key: 'admin_access_token');
+                          String? token= await storage.read(key:'user_access_token');
+                          log(token.toString());
                           await userlogout(token!);
+                          await storage.delete(key: 'user_type');
                           await GoogleSignIn().signOut();
                           // await GoogleSignIn().disconnect();
                           await _auth.signOut();

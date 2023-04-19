@@ -1,5 +1,7 @@
 import 'package:darkknightspict/api/user_api.dart';
 import 'package:darkknightspict/models/admin.dart';
+import 'package:darkknightspict/project/bottombar.dart';
+import 'package:darkknightspict/project/bottombar_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:developer';
@@ -66,30 +68,34 @@ late Future admins;
             onPressed: () async {
               final String? token =
                   await storage.read(key: 'user_access_token');
-                  // setState(() {
-                  //   admins = getAllAdmins( dropdownValue, token!);
-                  // });
             },
             child: const Text('Search'),
           ),
-          Expanded(
-            child: FutureBuilder(
-              future: getAdminsAll(dropdownValue),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                   log(snapshot.data.toString());
-                  //return Container();
-                  return ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(snapshot.data[index].name),
-                        subtitle: Text(snapshot.data[index].email),
-                      );
-                    },
-                  );
-                } else {
-                  return const Center(
+            Expanded(
+              child: FutureBuilder<List<AdminData>>(
+                future: getAdminsAll(dropdownValue),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    log(snapshot.data.toString());
+                    List<AdminData> adminList= snapshot.data!;
+                    return ListView.builder(
+                      itemCount: adminList.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () async{
+                             String? token= await storage.read(key: 'user_access_token');
+                             await addAdminData(adminList[index].id, token!);
+                             Navigator.pop(context);
+                          },
+                          child: ListTile(
+                            title: Text(adminList[index].displayName),
+                            subtitle: Text(adminList[index].profession),
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }

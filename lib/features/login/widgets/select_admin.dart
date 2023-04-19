@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:darkknightspict/api/user_api.dart';
 import 'package:darkknightspict/features/login/widgets/filter_admins.dart';
+import 'package:darkknightspict/models/admin.dart';
+import 'package:darkknightspict/project/bottombar.dart';
 import 'package:flutter/material.dart';
 
 class SelectAdmin extends StatefulWidget {
@@ -12,19 +16,30 @@ class SelectAdmin extends StatefulWidget {
 
 class _SelectAdminState extends State<SelectAdmin> {
   late Future admins;
-  @override
-  void initState() {
-    admins = getAdmin(widget.token);
-    super.initState();
-  }
+  //  Future<List<AdminData>> getAdminList(String profession) async {
+  // String? token= await storage.read(key: 'user_access_token');
+  // final admins = await getAdmin(token!);
+  // return admins;
+  // }
+  // @override
+  // void initState() {
+  //   admins = getAdmin(widget.token);
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {},
+          ),
+        ],
         backgroundColor: const Color(0xff010413),
         title: const Text(
-          'Select your Admin',
+          'My Admins',
           style: TextStyle(
               color: Color(0xff5ad0b5),
               fontWeight: FontWeight.bold,
@@ -32,33 +47,41 @@ class _SelectAdminState extends State<SelectAdmin> {
               fontFamily: 'Lato'),
         ),
       ),
-      // body: ElevatedButton(
-      //   onPressed: () async {
-      //     final admins=await getAdmin(widget.token);
-      //     log(admins.toString());
-      //   },
-      //   child: const Text('Get Admins'),
-      // ),
-      // body: FutureBuilder(
-      //   future: admins,
-      //   builder: (context, snapshot) {
-      //     if (snapshot.hasData) {
-      //       log(snapshot.data.toString());
-
-      //       // return ListView.builder(
-      //       //   itemBuilder: (context, index) {
-      //       //     return Container(
-      //       //       child: const Text('Muhahahahahaha'),
-      //       //     );
-      //       //   },
-      //       // );
-      //     } else {
-      //       return const Center(
-      //         child: CircularProgressIndicator(),
-      //       );
-      //     }
-      //   },
-      // ),
+      body: FutureBuilder<List<AdminData>>(
+        future: getAdmin(widget.token),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            log(snapshot.data.toString());
+            if (snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text('No Admins Found'),
+              );
+            }
+            List<AdminData> admins = snapshot.data!;
+            return ListView.builder(
+              itemCount: admins.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const BottomBar()));
+                  },
+                  child: ListTile(
+                    title: Text(admins[index].displayName),
+                    subtitle: Text(admins[index].profession),
+                  ),
+                );
+              },
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.pushReplacement(context,
