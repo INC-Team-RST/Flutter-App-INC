@@ -1,7 +1,6 @@
 import 'package:darkknightspict/api/user_api.dart';
-import 'package:darkknightspict/models/admin.dart';
+import 'package:darkknightspict/features/login/widgets/filter_admins.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer';
 
 class SelectAdmin extends StatefulWidget {
   String token;
@@ -12,8 +11,12 @@ class SelectAdmin extends StatefulWidget {
 }
 
 class _SelectAdminState extends State<SelectAdmin> {
-  
-  
+  late Future admins;
+  @override
+  void initState() {
+    admins = getAdmin(widget.token);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,34 +32,39 @@ class _SelectAdminState extends State<SelectAdmin> {
               fontFamily: 'Lato'),
         ),
       ),
-      body: ElevatedButton(
-        onPressed: () async {
-          final admins=await getAdmin(widget.token);
-          log(admins.toString());
-        },
-        child: const Text('Get Admins'),
-      ),
-      // body:FutureBuilder(
-      //   future: getAdmin(widget.token),
+      // body: ElevatedButton(
+      //   onPressed: () async {
+      //     final admins=await getAdmin(widget.token);
+      //     log(admins.toString());
+      //   },
+      //   child: const Text('Get Admins'),
+      // ),
+      // body: FutureBuilder(
+      //   future: admins,
       //   builder: (context, snapshot) {
       //     if (snapshot.hasData) {
-      //       final admins=snapshot.data;
       //       log(snapshot.data.toString());
+
       //       // return ListView.builder(
-      //       //   itemCount: admins.length,
       //       //   itemBuilder: (context, index) {
-      //       //     return ListTile();
+      //       //     return Container(
+      //       //       child: const Text('Muhahahahahaha'),
+      //       //     );
       //       //   },
-              
       //       // );
       //     } else {
       //       return const Center(
       //         child: CircularProgressIndicator(),
       //       );
       //     }
-          
       //   },
       // ),
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const FilterAdmin()));
+          },
+          label: const Text('Add Admin')),
     );
   }
 }

@@ -5,8 +5,11 @@ import 'package:darkknightspict/api/admin_api.dart';
 import 'package:darkknightspict/api/user_api.dart';
 import 'package:darkknightspict/models/admin_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+const storage = FlutterSecureStorage();
 
 class SignIn {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -39,7 +42,6 @@ class SignIn {
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             fontSize: 16.0);
-            
       } else {
         await addUser(
             accessToken: googleAuth.accessToken!,
@@ -56,6 +58,7 @@ class SignIn {
             fontSize: 16.0);
       }
       log(googleAuth.accessToken.toString());
+      await storage.write(key: 'user_access_token', value: googleAuth.accessToken!);
       return googleAuth.accessToken!;
     } catch (e) {
       Fluttertoast.showToast(
@@ -129,7 +132,7 @@ class SignIn {
     return;
   }
 
-  Future signInWithGoogleAdmin() async {
+  Future<bool> signInWithGoogleAdmin() async {
     //late final bool isNewUser;
     try {
       UserCredential userCredential;
@@ -143,21 +146,29 @@ class SignIn {
       userCredential = await _auth.signInWithCredential(googleAuthCredential);
       //isNewUser = userCredential.additionalUserInfo!.isNewUser;
       log(userCredential.user!.uid.toString());
-      checkAdmin(userCredential.user!.uid).then((value) {
-        if (value) {
-          // if true then admin exists so just login
-          loginAdmin(
-              uid: userCredential.user!.uid, token: googleAuth.accessToken!);
-        } else {
-          // if false then admin doesnt exist so add admin
-          addAdmin(
-              email: userCredential.user!.email!,
-              displayName: userCredential.user!.displayName!,
-              uid: userCredential.user!.uid,
-              phone: userCredential.user!.phoneNumber!,
-              photoURL: userCredential.user!.photoURL!);
-        }
-      });
+
+      await storage.write(
+          key: 'admin_access_token', value: googleAuth.accessToken!);
+
+      bool check = await checkAdmin(userCredential.user!.uid);
+
+      if (check) {
+        // if true then admin exists so just login
+        loginAdmin(
+            uid: userCredential.user!.uid, token: googleAuth.accessToken!);
+        return true;
+      } else {
+        addAdmin(
+          email: userCredential.user!.email!,
+          displayName: userCredential.user!.displayName!,
+          uid: userCredential.user!.uid,
+          phone: "",
+          photoURL: userCredential.user!.photoURL!,
+          accessToken: googleAuth.accessToken!,
+        );
+
+        return false;
+      }
 
       // if (isNewUser) {
       //   storeAdminDetails();
@@ -179,10 +190,10 @@ class SignIn {
 
       log("Hello");
       log(AdminInfo.uid!);
-      return;
+      // return;
     } catch (e) {
       log(e.toString());
-      return e;
+      throw Exception(e.toString());
     }
   }
 

@@ -1,13 +1,15 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:darkknightspict/api/user_api.dart';
 import 'package:darkknightspict/models/admin_info.dart';
 import 'package:darkknightspict/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../features/login/login.dart';
 import 'developers.dart';
-
+final storage= const FlutterSecureStorage();
 class NavDrawer extends StatefulWidget {
   const NavDrawer({Key? key}) : super(key: key);
 
@@ -16,6 +18,8 @@ class NavDrawer extends StatefulWidget {
 }
 
 class _NavDrawerState extends State<NavDrawer> {
+
+  
   final user = FirebaseAuth.instance.currentUser;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -115,6 +119,7 @@ class _NavDrawerState extends State<NavDrawer> {
                   ),
                   InkWell(
                     onTap: () {
+                      
                       AwesomeDialog(
                         context: context,
                         dialogType: DialogType.infoReverse,
@@ -123,6 +128,8 @@ class _NavDrawerState extends State<NavDrawer> {
                         title: 'Signout?',
                         desc: 'Do you really want to signout?',
                         btnOkOnPress: () async {
+                          String? token= await storage.read(key: 'admin_access_token');
+                          await userlogout(token!);
                           await GoogleSignIn().signOut();
                           // await GoogleSignIn().disconnect();
                           await _auth.signOut();

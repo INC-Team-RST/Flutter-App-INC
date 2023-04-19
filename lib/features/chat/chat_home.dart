@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:darkknightspict/api/admin_api.dart';
 import 'package:darkknightspict/models/select_client_details.dart';
 import 'package:darkknightspict/features/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 
@@ -20,6 +22,7 @@ class ChatHome extends StatefulWidget {
 }
 
 class _ChatHomeState extends State<ChatHome> {
+  final storage= const FlutterSecureStorage();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +44,8 @@ class _ChatHomeState extends State<ChatHome> {
               AdminInfo.uid = null;
               print("Hello");
               log('Logout button pressed');
+              String? token= await storage.read(key: 'admin_access_token');
+              await adminlogout(token!);
               await GoogleSignIn().signOut();
               await FirebaseAuth.instance.signOut();
               if (!mounted) return;

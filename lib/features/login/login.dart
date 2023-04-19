@@ -1,10 +1,15 @@
+import 'dart:developer';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:darkknightspict/features/login/widgets/profession.dart';
 import 'package:darkknightspict/features/login/widgets/select_admin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../project/bottombar_admin.dart';
 import '../../services/google_signin.dart';
-import 'dart:developer';
+
+const storage = FlutterSecureStorage();
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -89,7 +94,7 @@ class LoginScreen extends StatelessWidget {
                               onTap: () async {
                                 String token =
                                     await SignIn().signInWithGoogleUser();
-                                  log(token);
+                                log(token);
                                 // .then((isNewUser) => {
                                 //       if (!isNewUser)
                                 //         {
@@ -104,13 +109,13 @@ class LoginScreen extends StatelessWidget {
                                 //         }
                                 //       else
                                 //         {
-                                // Navigator.pushReplacement(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         SelectAdmin(token: token),
-                                //   ),
-                                // );
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SelectAdmin(token: token),
+                                  ),
+                                );
                                 // }
                                 // });
                               },
@@ -149,17 +154,26 @@ class LoginScreen extends StatelessWidget {
                                 color: const Color(0xff010413),
                                 borderRadius: BorderRadius.circular(25)),
                             child: InkWell(
-                              onTap: () {
-                                // TODO: Add admin page
-                                SignIn().signInWithGoogleAdmin().then(
-                                      (_) => Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
+                              onTap: () async {
+                                bool status =
+                                    await SignIn().signInWithGoogleAdmin();
+
+                                if (status) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
                                           builder: (context) =>
-                                              const BottomBarCA(),
-                                        ),
-                                      ),
-                                    );
+                                              const BottomBarCA()));
+                                } else {
+                                  final String? accessToken = await storage
+                                      .read(key: 'admin_access_token');
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Profession(
+                                                accessToken: accessToken!,
+                                              )));
+                                }
                               },
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,

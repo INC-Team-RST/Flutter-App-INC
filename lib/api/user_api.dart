@@ -13,8 +13,6 @@ Future<bool> checkUser({required String uid}) async {
         data: {"uid": uid});
     log(response.toString());
     log(response.data['message'].toString());
-    // log(response.message.toString());
-    // log(response.data.message);
     return response.data['message'];
   } catch (e) {
     log(e.toString());
@@ -71,7 +69,7 @@ Future<List<AdminData>> getAdmin(String token) async {
   try {
     Response response =
         await dio.get('https://client-hive.onrender.com/api/user/admins');
-
+    log(response.toString());
     log(response.data.toString());
 
     for (var data in response.data) {
@@ -90,5 +88,46 @@ Future<List<AdminData>> getAdmin(String token) async {
   } catch (e) {
     log(e.toString());
     return [];
+  }
+}
+
+Future<void> userlogout(String accessToken) async{
+   
+  dio.options.headers['content-Type'] = 'application/json';
+  dio.options.headers['Authorization']='Bearer $accessToken';
+  try{
+    Response response = await dio.post('https://client-hive.onrender.com/api/user/logout', data: {"token": accessToken});
+    log(response.toString());
+  } catch(e){
+    log(e.toString());
+  }
+}
+
+Future<List<AdminData>> getAllAdmins(String profession, String accessToken) async {
+  dio.options.headers['Authorization']='Bearer $accessToken';
+  dio.options.headers['content-Type'] = 'application/json';
+  List<AdminData> admins = [];
+  try {
+    Response response = await dio.post(
+        'https://client-hive.onrender.com/api/user/admins/all', data: {"profession": profession});
+     
+    for (var data in response.data) {
+      AdminData admin = AdminData(
+        id: data['id'],
+        emailId: data['email'],
+        displayName: data['display_name'],
+        uid: data['uid'],
+        profession: data['profession'],
+        photoURL: data['photoURL'],
+        phone: data['phone'],
+      );
+      admins.add(admin);
+    }
+    return admins;
+
+  } catch (e) {
+    log(e.toString());
+    throw Exception(e);
+    
   }
 }
