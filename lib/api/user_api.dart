@@ -13,6 +13,8 @@ Future<bool> checkUser({required String uid}) async {
         data: {"uid": uid});
     log(response.toString());
     log(response.data['message'].toString());
+    // log(response.message.toString());
+    // log(response.data.message);
     return response.data['message'];
   } catch (e) {
     log(e.toString());
@@ -27,18 +29,17 @@ Future<int?> addUser(
     required String phone,
     required String photoURL,
     required String accessToken}) async {
-  dio.options.headers['content-Type'] = 'application/json';
   try {
     Response response =
         await dio.post('https://client-hive.onrender.com/api/user/add', data: {
       "email": email,
-      "name": name,
+      "display_name": name,
       "uid": uid,
       "phone": phone,
       "photoURL": photoURL,
       "token": accessToken,
     });
-    log(response.data);
+    log(response.toString());
     log(response.statusCode.toString());
     return response.statusCode;
   } catch (e) {
@@ -53,7 +54,7 @@ Future<int?> loginUser({required String uid, required String token}) async {
     Response response = await dio.post(
         'https://client-hive.onrender.com/api/user/login',
         data: {"uid": uid, "token": token});
-    log(response.data);
+    log(response.toString());
     log(response.statusCode.toString());
     return response.statusCode;
   } catch (e) {

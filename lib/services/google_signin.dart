@@ -26,44 +26,35 @@ class SignIn {
       userCredential = await _auth.signInWithCredential(googleAuthCredential);
       log(userCredential.user!.uid.toString());
 
-      checkUser(uid: userCredential.user!.uid).then((value) => {
-            log('value $value'),
-            print(value == false),
-            if (value) //user does exist
-              {
-                loginUser(
-                    uid: userCredential.user!.uid,
-                    token: googleAuth.accessToken!),
-                Fluttertoast.showToast(
-                    msg: "Login Successful",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    fontSize: 16.0),
-              }
-            else if (!value) //user doesnt exist
-              {
-                log('user doesnt exist'),
-                log(userCredential.user!.email.toString()),
-                log(userCredential.user!.displayName.toString()),
-                log(userCredential.user!.uid.toString()),
-                log(userCredential.user!.phoneNumber.toString()),
-                addUser(
-                  
-                    accessToken: googleAuth.accessToken!,
-                    email: userCredential.user!.email!,
-                    name: userCredential.user!.displayName!,
-                    uid: userCredential.user!.uid,
-                    phone:"",
-                    photoURL: userCredential.user!.photoURL!),
-                Fluttertoast.showToast(
-                    msg: "Login Successful, user added",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    fontSize: 16.0),
-              }
-          });
+      bool check = await checkUser(uid: userCredential.user!.uid);
+
+      print(check);
+
+      if (check) {
+        await loginUser(
+            uid: userCredential.user!.uid, token: googleAuth.accessToken!);
+        Fluttertoast.showToast(
+            msg: "Login Successful",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 16.0);
+            
+      } else {
+        await addUser(
+            accessToken: googleAuth.accessToken!,
+            email: userCredential.user!.email!,
+            name: userCredential.user!.displayName!,
+            uid: userCredential.user!.uid,
+            phone: "",
+            photoURL: userCredential.user!.photoURL!);
+        Fluttertoast.showToast(
+            msg: "Login Successful, user added",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 16.0);
+      }
       log(googleAuth.accessToken.toString());
       return googleAuth.accessToken!;
     } catch (e) {

@@ -104,13 +104,13 @@ class LoginScreen extends StatelessWidget {
                                 //         }
                                 //       else
                                 //         {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        SelectAdmin(token: token),
-                                  ),
-                                );
+                                // Navigator.pushReplacement(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) =>
+                                //         SelectAdmin(token: token),
+                                //   ),
+                                // );
                                 // }
                                 // });
                               },
