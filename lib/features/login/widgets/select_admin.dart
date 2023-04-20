@@ -58,15 +58,16 @@ class _SelectAdminState extends State<SelectAdmin> {
               );
             }
             List<AdminData> admins = snapshot.data!;
+            log(admins[0].id.toString()) ;
             return ListView.builder(
               itemCount: admins.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const BottomBar()));
+                            builder: (context) => BottomBar(adminID: admins[index].id,)));
                   },
                   child: ListTile(
                     title: Text(admins[index].displayName),

@@ -9,6 +9,8 @@ import '../features/chat/chat_home.dart';
 class BottomBarCA extends StatefulWidget {
   // ignore: use_key_in_widget_constructors
   const BottomBarCA();
+
+  
   @override
   State<BottomBarCA> createState() => _BottomBarCAState();
 }

@@ -7,7 +7,9 @@ import '../features/files/file_home.dart';
 import '../features/laws/laws.dart';
 
 class BottomBar extends StatefulWidget {
-  const BottomBar({Key? key}) : super(key: key);
+  const BottomBar({required this.adminID});
+
+  final int adminID;
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -21,7 +23,7 @@ class _BottomBarState extends State<BottomBar> {
     const AppointmentStatus(),
     ChatScreen(uid: FirebaseAuth.instance.currentUser!.uid.toString()),
     const FileHome(),
-    const LawsAndActs(),
+    // const LawsAndActs(),
   ];
   @override
   void initState() {
@@ -57,10 +59,10 @@ class _BottomBarState extends State<BottomBar> {
             icon: Icon(Icons.file_copy_outlined),
             label: 'Files',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book_outlined),
-            label: 'Laws/Acts',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.book_outlined),
+          //   label: 'Laws/Acts',
+          // ),
         ],
       ),
       body: PageView(

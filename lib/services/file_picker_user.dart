@@ -1,14 +1,19 @@
+import 'dart:developer';
 import 'dart:typed_data';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 
 UploadTask? task;
 File? file;
+
+final storage = FlutterSecureStorage();
 
 class FirebaseApi {
   static UploadTask? uploadFile(String destination, File file) {
@@ -64,6 +69,22 @@ Future uploadFile(context, String id, {String type = "UserDocument"}) async {
     'URL': urlDownload,
     'createdAt': Timestamp.now(),
   });
+
+  String? token = await storage.read(key: 'user_access_token');
+  final Dio dio = Dio();
+
+  dio.options.headers['content-Type'] = 'application/json';
+  dio.options.headers['Authorization'] = 'Bearer $token';
+
+  Response response = await dio
+      .post('https://client-hive.onrender.com/api/user/document', data: {
+    "version": "1.0.0",
+    "name": fileName,
+    "url": urlDownload,
+  });
+
+  log(response.toString());
+  log(response.statusCode.toString());
 
   return AwesomeDialog(
     context: context,

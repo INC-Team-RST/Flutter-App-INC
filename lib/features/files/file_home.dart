@@ -1,10 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../services/file_picker_user.dart';
 
+const storage = FlutterSecureStorage();
+
 _launchURL(url) async {
+  print(url);
   if (await canLaunch(url)) {
     await launch(url);
   } else {
@@ -20,6 +26,30 @@ class FileHome extends StatefulWidget {
 }
 
 class _FileHomeState extends State<FileHome> {
+  late Future<List> docs;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    docs = getDocs();
+  }
+
+  Future<List> getDocs() async {
+    String? token = await storage.read(key: 'user_access_token');
+    final Dio dio = Dio();
+
+    log(token!.toString());
+
+    dio.options.headers['Authorization'] = 'Bearer $token';
+
+    Response response =
+        await dio.get("https://client-hive.onrender.com/api/user/document");
+    log(response.toString());
+    log(response.data.toString());
+    return response.data;
+  }
+
   @override
   Widget build(BuildContext context) {
     final userUID = FirebaseAuth.instance.currentUser!.uid;
@@ -60,7 +90,7 @@ class _FileHomeState extends State<FileHome> {
       )),
       Tab(
         child: Text(
-          'CA issued Documents',
+          'Admin issued Documents',
           style: TextStyle(
             fontFamily: 'Lato',
           ),
@@ -105,541 +135,563 @@ class _FileHomeState extends State<FileHome> {
                   top: 10,
                 ),
                 color: const Color(0xff010413),
-                child: StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection('Users')
-                        .doc(userUID)
-                        .collection("Documents")
-                        .snapshots(),
-                    builder: (ctx, AsyncSnapshot documentSnapshots) {
-                      if (documentSnapshots.connectionState ==
-                          ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      final document = documentSnapshots.data!.docs;
+                child: FutureBuilder<List>(
+                  future: docs,
+                  builder: (context, snapshot) {
+                    print(snapshot.data);
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasData && snapshot.data != null) {
+                      final data = snapshot.data!;
+
+                      print(data[0]["url"]);
+
                       return ListView.builder(
-                        itemCount: document.length,
-                        itemBuilder: (ctx, index) {
-                          return Container(
-                            child: document[index]['Type'] == 'UserDocument' &&
-                                    tabController.index == 0
-                                ? InkWell(
-                                    onTap: () {
-                                      _launchURL(document[index]['URL']);
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                        vertical: 5,
-                                        horizontal: 15,
-                                      ),
-                                      height:
-                                          MediaQuery.of(context).size.width *
-                                              0.15,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xff403ffc),
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          if (document[index]['Name']
-                                                      .split(".")
-                                                      .last ==
-                                                  'jpg' ||
-                                              document[index]['Name']
-                                                      .split(".")
-                                                      .last ==
-                                                  'jepg')
-                                            Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 4,
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/jpg_icon.png',
-                                              ),
-                                            ),
-                                          if (document[index]['Name']
-                                                  .split(".")
-                                                  .last ==
-                                              'doc')
-                                            Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 4,
-                                              ),
-                                              padding: const EdgeInsets.only(
-                                                right: 2,
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/doc_icon.png',
-                                              ),
-                                            ),
-                                          if (document[index]['Name']
-                                                  .split(".")
-                                                  .last ==
-                                              'pdf')
-                                            Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 4,
-                                              ),
-                                              padding: const EdgeInsets.only(
-                                                right: 2,
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/pdf_icon.png',
-                                              ),
-                                            ),
-                                          if (document[index]['Name']
-                                                  .split(".")
-                                                  .last ==
-                                              'docx')
-                                            Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 4,
-                                              ),
-                                              padding: const EdgeInsets.only(
-                                                right: 2,
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/docx_icon.png',
-                                              ),
-                                            ),
-                                          if (document[index]['Name']
-                                                  .split(".")
-                                                  .last ==
-                                              'xls')
-                                            Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 4,
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/xls_icon.png',
-                                              ),
-                                            ),
-                                          if (document[index]['Name']
-                                                  .split(".")
-                                                  .last ==
-                                              'xlsx')
-                                            Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 4,
-                                              ),
-                                              padding: const EdgeInsets.only(
-                                                right: 2,
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/xlsx_icon.png',
-                                              ),
-                                            ),
-                                          if (document[index]['Name']
-                                                  .split(".")
-                                                  .last ==
-                                              'csv')
-                                            Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 4,
-                                              ),
-                                              padding: const EdgeInsets.only(
-                                                right: 2,
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/csv_icon.png',
-                                              ),
-                                            ),
-                                          if (document[index]['Name']
-                                                  .split(".")
-                                                  .last ==
-                                              'ppt')
-                                            Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 4,
-                                              ),
-                                              padding: const EdgeInsets.only(
-                                                right: 2,
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/ppt_icon.png',
-                                              ),
-                                            ),
-                                          if (document[index]['Name']
-                                                  .split(".")
-                                                  .last ==
-                                              'pptx')
-                                            Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 4,
-                                              ),
-                                              padding: const EdgeInsets.only(
-                                                right: 2,
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/pptx_icon.png',
-                                              ),
-                                            ),
-                                          if (document[index]['Name']
-                                                      .split(".")
-                                                      .last !=
-                                                  'jpg' &&
-                                              document[index]['Name']
-                                                      .split(".")
-                                                      .last !=
-                                                  'jepg' &&
-                                              document[index]['Name']
-                                                      .split(".")
-                                                      .last !=
-                                                  'pdf' &&
-                                              document[index]['Name']
-                                                      .split(".")
-                                                      .last !=
-                                                  'docx' &&
-                                              document[index]['Name']
-                                                      .split(".")
-                                                      .last !=
-                                                  'doc' &&
-                                              document[index]['Name']
-                                                      .split(".")
-                                                      .last !=
-                                                  'xls' &&
-                                              document[index]['Name']
-                                                      .split(".")
-                                                      .last !=
-                                                  'xlsx' &&
-                                              document[index]['Name']
-                                                      .split(".")
-                                                      .last !=
-                                                  'csv' &&
-                                              document[index]['Name']
-                                                      .split(".")
-                                                      .last !=
-                                                  'pptx' &&
-                                              document[index]['Name']
-                                                      .split(".")
-                                                      .last !=
-                                                  'ppt')
-                                            Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 4,
-                                              ),
-                                              padding: const EdgeInsets.only(
-                                                right: 2,
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/file_icon.png',
-                                              ),
-                                            ),
-                                          Expanded(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                FittedBox(
-                                                  child: Text(
-                                                    document[index]['Name']
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              child: (data[index]['owner'] == 'USER' &&
+                                      tabController.index == 0)
+                                  ? InkWell(
+                                      onTap: () {
+                                        _launchURL(data[index]['url']);
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: 5,
+                                          horizontal: 15,
+                                        ),
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.15,
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xff403ffc),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            if (data[index]['name']
                                                         .split(".")
-                                                        .first,
+                                                        .last ==
+                                                    'jpg' ||
+                                                data[index]['name']
+                                                        .split(".")
+                                                        .last ==
+                                                    'jepg')
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/jpg_icon.png',
+                                                ),
+                                              ),
+                                            if (data[index]['name']
+                                                    .split(".")
+                                                    .last ==
+                                                'doc')
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                                padding: const EdgeInsets.only(
+                                                  right: 2,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/doc_icon.png',
+                                                ),
+                                              ),
+                                            if (data[index]['name']
+                                                    .split(".")
+                                                    .last ==
+                                                'pdf')
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                                padding: const EdgeInsets.only(
+                                                  right: 2,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/pdf_icon.png',
+                                                ),
+                                              ),
+                                            if (data[index]['name']
+                                                    .split(".")
+                                                    .last ==
+                                                'docx')
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                                padding: const EdgeInsets.only(
+                                                  right: 2,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/docx_icon.png',
+                                                ),
+                                              ),
+                                            if (data[index]['name']
+                                                    .split(".")
+                                                    .last ==
+                                                'xls')
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/xls_icon.png',
+                                                ),
+                                              ),
+                                            if (data[index]['name']
+                                                    .split(".")
+                                                    .last ==
+                                                'xlsx')
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                                padding: const EdgeInsets.only(
+                                                  right: 2,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/xlsx_icon.png',
+                                                ),
+                                              ),
+                                            if (data[index]['name']
+                                                    .split(".")
+                                                    .last ==
+                                                'csv')
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                                padding: const EdgeInsets.only(
+                                                  right: 2,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/csv_icon.png',
+                                                ),
+                                              ),
+                                            if (data[index]['name']
+                                                    .split(".")
+                                                    .last ==
+                                                'ppt')
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                                padding: const EdgeInsets.only(
+                                                  right: 2,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/ppt_icon.png',
+                                                ),
+                                              ),
+                                            if (data[index]['name']
+                                                    .split(".")
+                                                    .last ==
+                                                'pptx')
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                                padding: const EdgeInsets.only(
+                                                  right: 2,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/pptx_icon.png',
+                                                ),
+                                              ),
+                                            if (data[index]['name']
+                                                        .split(".")
+                                                        .last !=
+                                                    'jpg' &&
+                                                data[index]['name']
+                                                        .split(".")
+                                                        .last !=
+                                                    'jepg' &&
+                                                data[index]['name']
+                                                        .split(".")
+                                                        .last !=
+                                                    'pdf' &&
+                                                data[index]['name']
+                                                        .split(".")
+                                                        .last !=
+                                                    'docx' &&
+                                                data[index]['name']
+                                                        .split(".")
+                                                        .last !=
+                                                    'doc' &&
+                                                data[index]['name']
+                                                        .split(".")
+                                                        .last !=
+                                                    'xls' &&
+                                                data[index]['name']
+                                                        .split(".")
+                                                        .last !=
+                                                    'xlsx' &&
+                                                data[index]['name']
+                                                        .split(".")
+                                                        .last !=
+                                                    'csv' &&
+                                                data[index]['name']
+                                                        .split(".")
+                                                        .last !=
+                                                    'pptx' &&
+                                                data[index]['name']
+                                                        .split(".")
+                                                        .last !=
+                                                    'ppt')
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 4,
+                                                ),
+                                                padding: const EdgeInsets.only(
+                                                  right: 2,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/file_icon.png',
+                                                ),
+                                              ),
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  FittedBox(
+                                                    child: Text(
+                                                      data[index]['name']
+                                                          .split(".")
+                                                          .first,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontFamily: 'Lato',
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '.${data[index]['name'].split(".").last} file',
                                                     style: const TextStyle(
                                                       color: Colors.white,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontFamily: 'Lato',
-                                                      fontSize: 15,
+                                                      fontSize: 12.5,
                                                     ),
                                                   ),
-                                                ),
-                                                Text(
-                                                  '.${document[index]['Name'].split(".").last} file',
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: 'Lato',
-                                                    fontSize: 12.5,
-                                                  ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                : Container(
-                                    child: document[index]['Type'] ==
-                                                'CADocument' &&
-                                            tabController.index == 1
-                                        ? InkWell(
-                                            onTap: () {
-                                              _launchURL(
-                                                  document[index]['URL']);
-                                            },
-                                            child: Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 5,
-                                                horizontal: 15,
-                                              ),
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.15,
-                                              decoration: const BoxDecoration(
-                                                color: Color(0xff403ffc),
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  if (document[index]['Name']
-                                                              .split(".")
-                                                              .last ==
-                                                          'jpg' ||
-                                                      document[index]['Name']
-                                                              .split(".")
-                                                              .last ==
-                                                          'jepg')
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 4,
-                                                      ),
-                                                      child: Image.asset(
-                                                        'assets/images/jpg_icon.png',
-                                                      ),
-                                                    ),
-                                                  if (document[index]['Name']
-                                                          .split(".")
-                                                          .last ==
-                                                      'doc')
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 4,
-                                                      ),
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        right: 2,
-                                                      ),
-                                                      child: Image.asset(
-                                                        'assets/images/doc_icon.png',
-                                                      ),
-                                                    ),
-                                                  if (document[index]['Name']
-                                                          .split(".")
-                                                          .last ==
-                                                      'pdf')
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 4,
-                                                      ),
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        right: 2,
-                                                      ),
-                                                      child: Image.asset(
-                                                        'assets/images/pdf_icon.png',
-                                                      ),
-                                                    ),
-                                                  if (document[index]['Name']
-                                                          .split(".")
-                                                          .last ==
-                                                      'docx')
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 4,
-                                                      ),
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        right: 2,
-                                                      ),
-                                                      child: Image.asset(
-                                                        'assets/images/docx_icon.png',
-                                                      ),
-                                                    ),
-                                                  if (document[index]['Name']
-                                                          .split(".")
-                                                          .last ==
-                                                      'xls')
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 4,
-                                                      ),
-                                                      child: Image.asset(
-                                                        'assets/images/xls_icon.png',
-                                                      ),
-                                                    ),
-                                                  if (document[index]['Name']
-                                                          .split(".")
-                                                          .last ==
-                                                      'xlsx')
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 4,
-                                                      ),
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        right: 2,
-                                                      ),
-                                                      child: Image.asset(
-                                                        'assets/images/xlsx_icon.png',
-                                                      ),
-                                                    ),
-                                                  if (document[index]['Name']
-                                                          .split(".")
-                                                          .last ==
-                                                      'csv')
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 4,
-                                                      ),
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        right: 2,
-                                                      ),
-                                                      child: Image.asset(
-                                                        'assets/images/csv_icon.png',
-                                                      ),
-                                                    ),
-                                                  if (document[index]['Name']
-                                                          .split(".")
-                                                          .last ==
-                                                      'ppt')
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 4,
-                                                      ),
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        right: 2,
-                                                      ),
-                                                      child: Image.asset(
-                                                        'assets/images/ppt_icon.png',
-                                                      ),
-                                                    ),
-                                                  if (document[index]['Name']
-                                                          .split(".")
-                                                          .last ==
-                                                      'pptx')
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 4,
-                                                      ),
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        right: 2,
-                                                      ),
-                                                      child: Image.asset(
-                                                        'assets/images/pptx_icon.png',
-                                                      ),
-                                                    ),
-                                                  if (document[index]['Name']
-                                                              .split(".")
-                                                              .last !=
-                                                          'jpg' &&
-                                                      document[index]['Name']
-                                                              .split(".")
-                                                              .last !=
-                                                          'jepg' &&
-                                                      document[index]['Name']
-                                                              .split(".")
-                                                              .last !=
-                                                          'pdf' &&
-                                                      document[index]['Name']
-                                                              .split(".")
-                                                              .last !=
-                                                          'docx' &&
-                                                      document[index]['Name']
-                                                              .split(".")
-                                                              .last !=
-                                                          'doc' &&
-                                                      document[index]['Name']
-                                                              .split(".")
-                                                              .last !=
-                                                          'xls' &&
-                                                      document[index]['Name']
-                                                              .split(".")
-                                                              .last !=
-                                                          'xlsx' &&
-                                                      document[index]['Name']
-                                                              .split(".")
-                                                              .last !=
-                                                          'csv' &&
-                                                      document[index]['Name']
-                                                              .split(".")
-                                                              .last !=
-                                                          'pptx' &&
-                                                      document[index]['Name']
-                                                              .split(".")
-                                                              .last !=
-                                                          'ppt')
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 4,
-                                                      ),
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        right: 2,
-                                                      ),
-                                                      child: Image.asset(
-                                                        'assets/images/file_icon.png',
-                                                      ),
-                                                    ),
-                                                  Expanded(
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        FittedBox(
-                                                          child: Text(
-                                                            document[index]
-                                                                    ['Name']
+                                    )
+                                  : Container(
+                                      child: (data[index]['owner'] == 'ADMIN' &&
+                                              tabController.index == 1)
+                                          ? InkWell(
+                                              onTap: () {
+                                                _launchURL(data[index]['url']);
+                                              },
+                                              child: Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 5,
+                                                  horizontal: 15,
+                                                ),
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.15,
+                                                decoration: const BoxDecoration(
+                                                  color: Color(0xff403ffc),
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(10)),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    if (data[index]['name']
                                                                 .split(".")
-                                                                .first,
+                                                                .last ==
+                                                            'jpg' ||
+                                                        data[index]['name']
+                                                                .split(".")
+                                                                .last ==
+                                                            'jepg')
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
+                                                        ),
+                                                        child: Image.asset(
+                                                          'assets/images/jpg_icon.png',
+                                                        ),
+                                                      ),
+                                                    if (data[index]['name']
+                                                            .split(".")
+                                                            .last ==
+                                                        'doc')
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          right: 2,
+                                                        ),
+                                                        child: Image.asset(
+                                                          'assets/images/doc_icon.png',
+                                                        ),
+                                                      ),
+                                                    if (data[index]['name']
+                                                            .split(".")
+                                                            .last ==
+                                                        'pdf')
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          right: 2,
+                                                        ),
+                                                        child: Image.asset(
+                                                          'assets/images/pdf_icon.png',
+                                                        ),
+                                                      ),
+                                                    if (data[index]['name']
+                                                            .split(".")
+                                                            .last ==
+                                                        'docx')
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          right: 2,
+                                                        ),
+                                                        child: Image.asset(
+                                                          'assets/images/docx_icon.png',
+                                                        ),
+                                                      ),
+                                                    if (data[index]['name']
+                                                            .split(".")
+                                                            .last ==
+                                                        'xls')
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
+                                                        ),
+                                                        child: Image.asset(
+                                                          'assets/images/xls_icon.png',
+                                                        ),
+                                                      ),
+                                                    if (data[index]['name']
+                                                            .split(".")
+                                                            .last ==
+                                                        'xlsx')
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          right: 2,
+                                                        ),
+                                                        child: Image.asset(
+                                                          'assets/images/xlsx_icon.png',
+                                                        ),
+                                                      ),
+                                                    if (data[index]['name']
+                                                            .split(".")
+                                                            .last ==
+                                                        'csv')
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          right: 2,
+                                                        ),
+                                                        child: Image.asset(
+                                                          'assets/images/csv_icon.png',
+                                                        ),
+                                                      ),
+                                                    if (data[index]['name']
+                                                            .split(".")
+                                                            .last ==
+                                                        'ppt')
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          right: 2,
+                                                        ),
+                                                        child: Image.asset(
+                                                          'assets/images/ppt_icon.png',
+                                                        ),
+                                                      ),
+                                                    if (data[index]['name']
+                                                            .split(".")
+                                                            .last ==
+                                                        'pptx')
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          right: 2,
+                                                        ),
+                                                        child: Image.asset(
+                                                          'assets/images/pptx_icon.png',
+                                                        ),
+                                                      ),
+                                                    if (data[index]['name']
+                                                                .split(".")
+                                                                .last !=
+                                                            'jpg' &&
+                                                        data[index]['name']
+                                                                .split(".")
+                                                                .last !=
+                                                            'jepg' &&
+                                                        data[index]['name']
+                                                                .split(".")
+                                                                .last !=
+                                                            'pdf' &&
+                                                        data[index]['name']
+                                                                .split(".")
+                                                                .last !=
+                                                            'docx' &&
+                                                        data[index]['name']
+                                                                .split(".")
+                                                                .last !=
+                                                            'doc' &&
+                                                        data[index]['name']
+                                                                .split(".")
+                                                                .last !=
+                                                            'xls' &&
+                                                        data[index]['name']
+                                                                .split(".")
+                                                                .last !=
+                                                            'xlsx' &&
+                                                        data[index]['name']
+                                                                .split(".")
+                                                                .last !=
+                                                            'csv' &&
+                                                        data[index]['name']
+                                                                .split(".")
+                                                                .last !=
+                                                            'pptx' &&
+                                                        data[index]['name']
+                                                                .split(".")
+                                                                .last !=
+                                                            'ppt')
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          right: 2,
+                                                        ),
+                                                        child: Image.asset(
+                                                          'assets/images/file_icon.png',
+                                                        ),
+                                                      ),
+                                                    Expanded(
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          FittedBox(
+                                                            child: Text(
+                                                              data[index]
+                                                                      ['name']
+                                                                  .split(".")
+                                                                  .first,
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontFamily:
+                                                                    'Lato',
+                                                                fontSize: 15,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            '.${data[index]['name'].split(".").last} file',
                                                             style:
                                                                 const TextStyle(
                                                               color:
@@ -649,34 +701,28 @@ class _FileHomeState extends State<FileHome> {
                                                                       .bold,
                                                               fontFamily:
                                                                   'Lato',
-                                                              fontSize: 15,
+                                                              fontSize: 12.5,
                                                             ),
                                                           ),
-                                                        ),
-                                                        Text(
-                                                          '.${document[index]['Name'].split(".").last} file',
-                                                          style:
-                                                              const TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontFamily: 'Lato',
-                                                            fontSize: 12.5,
-                                                          ),
-                                                        ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                        : null,
-                                  ),
-                          );
-                        },
+                                            )
+                                          : null,
+                                    ),
+                            );
+                          });
+                    } else if (snapshot.hasError) {
+                      return const Center(
+                        child: Text('Error'),
                       );
-                    }),
+                    }
+                    return Text("NO DATA");
+                  },
+                ),
               );
             }).toList(),
           ),

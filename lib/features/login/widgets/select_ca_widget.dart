@@ -58,7 +58,9 @@ class _SelectCAState extends State<SelectCA> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const BottomBar(),
+                            builder: (context) => const BottomBar(
+                              adminID: 1,
+                            ),
                           ),
                         );
                       },
