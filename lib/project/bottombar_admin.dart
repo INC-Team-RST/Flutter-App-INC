@@ -8,27 +8,36 @@ import '../features/chat/chat_home.dart';
 
 class BottomBarCA extends StatefulWidget {
   // ignore: use_key_in_widget_constructors
-  const BottomBarCA();
+  BottomBarCA({required this.UserId});
 
-  
+  int UserId;
+
   @override
   State<BottomBarCA> createState() => _BottomBarCAState();
 }
 
 class _BottomBarCAState extends State<BottomBarCA> {
   int _selectedIndex = 1;
-  static const List<Widget> pages = <Widget>[
+  List<Widget> pages = <Widget>[
     // AppointmentsHomeAdmin(),
-    ClientStatus(),
-    ChatHome(),
-    FileHomeAdmin(),
-    LawsAndActs(),
+    
+    // LawsAndActs(),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+
+    pages = <Widget>[
+    // AppointmentsHomeAdmin(),
+    ClientStatus(
+      UserId: widget.UserId,
+    ),
+    ChatHome(),
+    FileHomeAdmin(),
+    // LawsAndActs(),
+  ];
   }
 
   @override
@@ -54,10 +63,10 @@ class _BottomBarCAState extends State<BottomBarCA> {
             icon: Icon(Icons.file_copy_outlined),
             label: 'Files',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book_outlined),
-            label: 'Laws/Acts',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.book_outlined),
+          //   label: 'Laws/Acts',
+          // ),
         ],
         currentIndex: _selectedIndex,
         // selectedItemColor: Colors.blue,

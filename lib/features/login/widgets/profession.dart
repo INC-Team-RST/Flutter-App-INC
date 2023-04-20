@@ -1,4 +1,5 @@
 import 'package:darkknightspict/api/admin_api.dart';
+import 'package:darkknightspict/features/login/admin_widgets/user_list.dart';
 import 'package:darkknightspict/project/bottombar_admin.dart';
 import 'package:flutter/material.dart';
 
@@ -51,14 +52,15 @@ class _ProfessionState extends State<Profession> {
             onPressed: () async {
               //patch request to be implemented
 
-              await updateProfession(profession: dropdownValue, accessToken: widget.accessToken);
+              await updateProfession(
+                  profession: dropdownValue, accessToken: widget.accessToken);
 
               // navigate to the dashboard
 
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const BottomBarCA(),
+                  builder: (context) => UserList(),
                 ),
               );
             },

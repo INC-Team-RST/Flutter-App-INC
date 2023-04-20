@@ -10,7 +10,9 @@ import 'package:intl/intl.dart';
 import '../../models/admin_info.dart';
 
 class ClientStatus extends StatefulWidget {
-  const ClientStatus({Key? key}) : super(key: key);
+  ClientStatus({required this.UserId});
+
+  final int UserId;
 
   @override
   State<ClientStatus> createState() => _ClientStatusState();

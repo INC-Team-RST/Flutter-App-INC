@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:darkknightspict/project/bottombar_admin.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -66,7 +67,14 @@ class _UsersScreenState extends State<UsersScreen> {
             itemCount: snapshot.data.length,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomBarCA(
+                                UserId: snapshot.data[index]['id'],
+                              )));
+                },
                 child: ListTile(
                   title: Text(snapshot.data[index]['display_name']),
                   subtitle: Text(snapshot.data[index]['email']),
