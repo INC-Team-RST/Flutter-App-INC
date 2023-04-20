@@ -122,7 +122,7 @@ class _SelectAdminState extends State<SelectAdmin> {
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => const FilterAdmin()));
           },
-          label: const Text('Add Admin')),
+          label: const Text('+ Add Admin')),
     );
   }
 }

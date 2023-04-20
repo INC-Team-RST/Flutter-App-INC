@@ -43,17 +43,7 @@ class _DevelopersState extends State<Developers> {
       linkedUrl: "https://www.linkedin.com/in/rohan-doshi21/",
       emailUrl: "rohan.doshi02@gmail.com",
       instagramUrl: "https://www.instagram.com/rohan.doshi02",
-      section: "SE-01",
-      color: Colors.transparent,
-    ),
-    const Developer(
-      name: 'Atharv Bhadange',
-      image: 'assets/images/Atharv.jpeg',
-      gitHubUrl: "https://github.com/atharv-bhadange",
-      linkedUrl: "https://www.linkedin.com/in/atharv-bhadange-9817521ba/",
-      emailUrl: "bhadange.atharv@gmail.com",
-      instagramUrl: "https://www.instagram.com/the_lonely_owl/",
-      section: "SE-01",
+      section: "TE-01",
       color: Colors.transparent,
     ),
   ];

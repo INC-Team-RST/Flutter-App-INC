@@ -1,17 +1,18 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 
 import '../../project/drawer.dart';
 import 'widgets/slot_booking_widget.dart';
 
+const storage = FlutterSecureStorage();
+
 class AppointmentStatus extends StatefulWidget {
-  const AppointmentStatus({required this.AdminId});
+  const AppointmentStatus({Key? key, required this.AdminId}) : super(key: key);
 
   final int AdminId;
 
@@ -133,14 +134,27 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                     ),
                                   ),
                           ),
-                          const Text(
-                            'Appointments',
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              fontSize: 22,
-                              color: Color(0xff5ad0b5),
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            children: [
+                              const Text(
+                                'Appointments',
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 22,
+                                  color: Color(0xff5ad0b5),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.35,
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(Icons.arrow_back_ios,
+                                      color: Color(0xff5ad0b5))),
+                            ],
                           ),
                         ],
                       ),
@@ -150,7 +164,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                         future: appointments,
                         builder: (context, snapshot) {
                           if (snapshot.hasData && snapshot.data != null) {
-                            return snapshot.data!.length == 0
+                            return snapshot.data!.isEmpty
                                 ? const Center(
                                     child: Text(
                                       'No Appointments',
@@ -190,9 +204,9 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                         child: Padding(
                                           padding: const EdgeInsets.all(18.0),
                                           child: Column(children: [
-                                            Text(
+                                            const Text(
                                               "Appointment Date",
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontFamily: 'Lato',
                                                 fontSize: 22,
                                                 color: Colors.black54,
@@ -213,9 +227,9 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                             SizedBox(
                                               height: height * 0.02,
                                             ),
-                                            Text(
+                                            const Text(
                                               "Appointment Start Time",
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontFamily: 'Lato',
                                                 fontSize: 22,
                                                 color: Colors.black54,
@@ -238,9 +252,9 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                             SizedBox(
                                               height: height * 0.02,
                                             ),
-                                            Text(
+                                            const Text(
                                               "Appointment End Time",
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontFamily: 'Lato',
                                                 fontSize: 22,
                                                 color: Colors.black54,
@@ -263,7 +277,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                             SizedBox(
                                               height: height * 0.02,
                                             ),
-                                            Text(
+                                            const Text(
                                               "Status",
                                               style: TextStyle(
                                                 fontFamily: 'Lato',

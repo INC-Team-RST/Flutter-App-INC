@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../services/file_picker_user.dart';
 
 const storage = FlutterSecureStorage();
@@ -145,12 +146,25 @@ class _FileHomeState extends State<FileHome> {
                       );
                     } else if (snapshot.hasData && snapshot.data != null) {
                       final data = snapshot.data!;
+                      if(snapshot.data!.isEmpty){
+                        return const Center(
+                          child: Text(
+                            'No Documents',
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                        );
+                      }
 
                       print(data[0]["url"]);
 
                       return ListView.builder(
                           itemCount: data.length,
                           itemBuilder: (context, index) {
+
                             return Container(
                               child: (data[index]['owner'] == 'USER' &&
                                       tabController.index == 0)
@@ -720,7 +734,7 @@ class _FileHomeState extends State<FileHome> {
                         child: Text('Error'),
                       );
                     }
-                    return Text("NO DATA");
+                    return const Text("NO DATA");
                   },
                 ),
               );
