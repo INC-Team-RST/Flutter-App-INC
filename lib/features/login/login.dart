@@ -159,7 +159,7 @@ class LoginScreen extends StatelessWidget {
                                     await SignIn().signInWithGoogleAdmin();
 
                                 if (status) {
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
@@ -167,8 +167,8 @@ class LoginScreen extends StatelessWidget {
                                 } else {
                                   final String? accessToken = await storage
                                       .read(key: 'admin_access_token');
-                                 
-                                  Navigator.push(
+
+                                  Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Profession(
