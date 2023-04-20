@@ -20,7 +20,7 @@ class _BottomBarCAState extends State<BottomBarCA> {
   int _selectedIndex = 1;
   List<Widget> pages = <Widget>[
     // AppointmentsHomeAdmin(),
-    
+
     // LawsAndActs(),
   ];
 
@@ -28,16 +28,21 @@ class _BottomBarCAState extends State<BottomBarCA> {
     setState(() {
       _selectedIndex = index;
     });
+  }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
     pages = <Widget>[
-    // AppointmentsHomeAdmin(),
-    ClientStatus(
-      UserId: widget.UserId,
-    ),
-    ChatHome(),
-    FileHomeAdmin(),
-    // LawsAndActs(),
-  ];
+      // AppointmentsHomeAdmin(),
+      ClientStatus(
+        UserId: widget.UserId,
+      ),
+      ChatHome(),
+      FileHomeAdmin(),
+      // LawsAndActs(),
+    ];
   }
 
   @override
