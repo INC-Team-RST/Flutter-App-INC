@@ -44,7 +44,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
     dio.options.headers['Authorization'] = 'Bearer $token';
 
     Response response =
-        await dio.get("https://client-hive.onrender.com/api/user/appointment");
+        await dio.get("https://client-hive.onrender.com/api/user/appointment/${widget.AdminId}");
 
     log(response.toString());
 

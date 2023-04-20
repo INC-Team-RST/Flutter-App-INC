@@ -1,32 +1,47 @@
 import 'dart:developer';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:darkknightspict/api/user_api.dart';
+import 'package:darkknightspict/features/files/file_home_admin.dart';
+import 'package:darkknightspict/features/laws/laws.dart';
+import 'package:darkknightspict/features/login/admin_widgets/admin_appointments.dart';
+import 'package:darkknightspict/features/login/admin_widgets/all_users.dart';
 import 'package:darkknightspict/features/login/login.dart';
-import 'package:darkknightspict/features/login/widgets/filter_admins.dart';
-import 'package:darkknightspict/models/admin.dart';
 import 'package:darkknightspict/models/admin_info.dart';
 import 'package:darkknightspict/models/user.dart';
-import 'package:darkknightspict/project/bottombar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../api/admin_api.dart';
+import '../../../api/user_api.dart';
+import 'file_home.dart';
+
 final storage= const FlutterSecureStorage();
-class SelectAdmin extends StatefulWidget {
-  String token;
-  SelectAdmin({Key? key, required this.token}) : super(key: key);
+
+
+class UserList extends StatefulWidget {
+  // ignore: use_key_in_widget_constructors
+  const UserList();
 
   @override
-  State<SelectAdmin> createState() => _SelectAdminState();
+  State<UserList> createState() => _UserListState();
 }
 
-class _SelectAdminState extends State<SelectAdmin> {
-  late Future admins;
-  final user = FirebaseAuth.instance.currentUser;
+class _UserListState extends State<UserList> {
+  int _selectedIndex = 1;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  
+  static const List<Widget> pages = <Widget>[
+    FileAdmin(),
+    UsersScreen(),
+    AdminAppointments()
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +62,9 @@ class _SelectAdminState extends State<SelectAdmin> {
                         title: 'Signout?',
                         desc: 'Do you really want to signout?',
                         btnOkOnPress: () async {
-                          String? token= await storage.read(key:'user_access_token');
+                          String? token= await storage.read(key:'admin_access_token');
                           log(token.toString());
-                          await userlogout(token!);
+                          await adminlogout(token!);
                           await storage.delete(key: 'user_type');
                           await GoogleSignIn().signOut();
                           // await GoogleSignIn().disconnect();
@@ -74,7 +89,7 @@ class _SelectAdminState extends State<SelectAdmin> {
         ],
         backgroundColor: const Color(0xff010413),
         title: const Text(
-          'My Admins',
+          'My Users',
           style: TextStyle(
               color: Color(0xff5ad0b5),
               fontWeight: FontWeight.bold,
@@ -82,48 +97,31 @@ class _SelectAdminState extends State<SelectAdmin> {
               fontFamily: 'Lato'),
         ),
       ),
-      body: FutureBuilder<List<AdminData>>(
-        future: getAdmin(widget.token),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            log(snapshot.data.toString());
-            if (snapshot.data!.isEmpty) {
-              return const Center(
-                child: Text('No Admins Found'),
-              );
-            }
-            List<AdminData> admins = snapshot.data!;
-            log(admins[0].id.toString()) ;
-            return ListView.builder(
-              itemCount: admins.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BottomBar(adminID: admins[index].id,)));
-                  },
-                  child: ListTile(
-                    title: Text(admins[index].displayName),
-                    subtitle: Text(admins[index].profession),
-                  ),
-                );
-              },
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+      body: pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xff000000),
+        type: BottomNavigationBarType.fixed,
+        // unselectedItemColor: Colors.grey,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.file_copy_outlined),
+            label: 'Files',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people_outline),
+            label: 'Users',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event_available_outlined),
+            label: 'Appointments',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        // selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const FilterAdmin()));
-          },
-          label: const Text('+ Add Admin')),
     );
   }
 }

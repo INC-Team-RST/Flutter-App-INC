@@ -46,7 +46,8 @@ Future selectFile() async {
   file = File(path);
 }
 
-Future uploadFile(context, String id, {String type = "UserDocument"}) async {
+Future uploadFile(context, String id, String usertype,
+    {String type = "UserDocument"}) async {
   if (file == null) return;
 
   final fileName = basename(file!.path);
@@ -70,21 +71,39 @@ Future uploadFile(context, String id, {String type = "UserDocument"}) async {
     'createdAt': Timestamp.now(),
   });
 
-  String? token = await storage.read(key: 'user_access_token');
   final Dio dio = Dio();
 
   dio.options.headers['content-Type'] = 'application/json';
-  dio.options.headers['Authorization'] = 'Bearer $token';
 
-  Response response = await dio
-      .post('https://client-hive.onrender.com/api/user/document', data: {
-    "version": "1.0.0",
-    "name": fileName,
-    "url": urlDownload,
-  });
+  if (usertype == 'user') {
+    String? token = await storage.read(key: 'user_access_token');
 
-  log(response.toString());
-  log(response.statusCode.toString());
+    dio.options.headers['Authorization'] = 'Bearer $token';
+
+    Response response = await dio
+        .post('https://client-hive.onrender.com/api/user/document', data: {
+      "version": "1.0.0",
+      "name": fileName,
+      "url": urlDownload,
+    });
+
+    log(response.toString());
+    log(response.statusCode.toString());
+  } else {
+    String? token = await storage.read(key: 'admin_access_token');
+
+    dio.options.headers['Authorization'] = 'Bearer $token';
+
+    Response response = await dio
+        .post('https://client-hive.onrender.com/api/admin/document', data: {
+      "version": "1.0.0",
+      "name": fileName,
+      "url": urlDownload,
+    });
+
+    log(response.toString());
+    log(response.statusCode.toString());
+  }
 
   return AwesomeDialog(
     context: context,

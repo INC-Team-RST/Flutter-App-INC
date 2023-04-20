@@ -37,29 +37,29 @@ class _ChatHomeState extends State<ChatHome> {
               fontSize: 25,
               fontFamily: 'Lato'),
         ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              LocalUser.uid = null;
-              AdminInfo.uid = null;
-              print("Hello");
-              log('Logout button pressed');
-              String? token= await storage.read(key: 'admin_access_token');
-              await adminlogout(token!);
-              await storage.delete(key: 'user_type');
-              await GoogleSignIn().signOut();
-              await FirebaseAuth.instance.signOut();
-              if (!mounted) return;
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  (Route<dynamic> route) => false);
-            },
-            icon: const Icon(
-              Icons.logout,
-              color: Color(0xff5ad0b5),
-            ),
-          )
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () async {
+        //       LocalUser.uid = null;
+        //       AdminInfo.uid = null;
+        //       print("Hello");
+        //       log('Logout button pressed');
+        //       String? token= await storage.read(key: 'admin_access_token');
+        //       await adminlogout(token!);
+        //       await storage.delete(key: 'user_type');
+        //       await GoogleSignIn().signOut();
+        //       await FirebaseAuth.instance.signOut();
+        //       if (!mounted) return;
+        //       Navigator.of(context).pushAndRemoveUntil(
+        //           MaterialPageRoute(builder: (context) => const LoginScreen()),
+        //           (Route<dynamic> route) => false);
+        //     },
+        //     icon: const Icon(
+        //       Icons.logout,
+        //       color: Color(0xff5ad0b5),
+        //     ),
+        //   )
+        // ],
       ),
       body: Center(
         child: StreamBuilder(

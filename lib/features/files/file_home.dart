@@ -62,7 +62,7 @@ class _FileHomeState extends State<FileHome> {
           onPressed: () async {
             await selectFile();
             if (!mounted) return;
-            await uploadFile(context, userUID);
+            await uploadFile(context, userUID, 'user');
           },
           label: const Text(
             'Upload',

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:darkknightspict/features/login/admin_widgets/user_list.dart';
 import 'package:darkknightspict/features/login/widgets/profession.dart';
 import 'package:darkknightspict/features/login/widgets/select_admin.dart';
 import 'package:flutter/material.dart';
@@ -163,7 +164,7 @@ class LoginScreen extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const BottomBarCA()));
+                                              const UserList()));
                                 } else {
                                   final String? accessToken = await storage
                                       .read(key: 'admin_access_token');
