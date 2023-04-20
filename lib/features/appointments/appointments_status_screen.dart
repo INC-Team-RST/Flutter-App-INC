@@ -145,64 +145,153 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                         ],
                       ),
                     ),
-                    FutureBuilder<List>(
-                      future: appointments,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data != null) {
-                          return snapshot.data!.length == 0
-                              ? const Center(
-                                  child: Text(
-                                    'No Appointments',
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      fontSize: 22,
-                                      color: Color(0xff5ad0b5),
-                                      fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: FutureBuilder<List>(
+                        future: appointments,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData && snapshot.data != null) {
+                            return snapshot.data!.length == 0
+                                ? const Center(
+                                    child: Text(
+                                      'No Appointments',
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        fontSize: 22,
+                                        color: Color(0xff5ad0b5),
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                )
-                              : ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: snapshot.data!.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      child: Column(children: [
-                                        Text(
-                                          snapshot.data![index]['date'],
-                                          style: const TextStyle(
-                                            fontFamily: 'Lato',
-                                            fontSize: 22,
-                                            color: Color(0xff5ad0b5),
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: snapshot.data!.length,
+                                    itemBuilder: (context, index) {
+                                      Color col = Colors.white;
+
+                                      if (snapshot.data![index]['status'] ==
+                                          "PENDING") {
+                                        col = Colors.grey;
+                                      } else if (snapshot.data![index]
+                                              ['status'] ==
+                                          "ACCEPTED") {
+                                        col = Colors.green;
+                                      } else {
+                                        col = Colors.red;
+                                      }
+
+                                      return Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 30, vertical: 10),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.white,
                                         ),
-                                        Text(
-                                          snapshot.data![index]['startTime'],
-                                          style: const TextStyle(
-                                            fontFamily: 'Lato',
-                                            fontSize: 22,
-                                            color: Color(0xff5ad0b5),
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(18.0),
+                                          child: Column(children: [
+                                            Text(
+                                              "Appointment Date",
+                                              style: const TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontSize: 22,
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              DateFormat('yyyy-MM-dd').format(
+                                                  DateTime.parse(snapshot
+                                                      .data![index]['date'])),
+                                              style: const TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontSize: 22,
+                                                color: Color(0xff5ad0b5),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: height * 0.02,
+                                            ),
+                                            Text(
+                                              "Appointment Start Time",
+                                              style: const TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontSize: 22,
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              DateFormat('h:mm a').format(
+                                                  DateTime.parse(
+                                                          snapshot.data![index]
+                                                              ['startTime'])
+                                                      .toLocal()),
+                                              style: const TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontSize: 22,
+                                                color: Color(0xff5ad0b5),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: height * 0.02,
+                                            ),
+                                            Text(
+                                              "Appointment End Time",
+                                              style: const TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontSize: 22,
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              DateFormat('h:mm a').format(
+                                                  DateTime.parse(
+                                                          snapshot.data![index]
+                                                              ['endTime'])
+                                                      .toLocal()),
+                                              style: const TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontSize: 22,
+                                                color: Color(0xff5ad0b5),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: height * 0.02,
+                                            ),
+                                            Text(
+                                              "Status",
+                                              style: TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontSize: 22,
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              snapshot.data![index]['status'],
+                                              style: TextStyle(
+                                                fontFamily: 'Lato',
+                                                fontSize: 22,
+                                                color: col,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )
+                                          ]),
                                         ),
-                                        Text(
-                                          snapshot.data![index]['endTime'],
-                                          style: const TextStyle(
-                                            fontFamily: 'Lato',
-                                            fontSize: 22,
-                                            color: Color(0xff5ad0b5),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                    );
-                                  },
-                                );
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
+                                      );
+                                    },
+                                  );
+                          }
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
