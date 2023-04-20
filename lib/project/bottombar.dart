@@ -19,16 +19,20 @@ int pageIndex = 0;
 
 class _BottomBarState extends State<BottomBar> {
   PageController _pageController = PageController();
-  List<Widget> pages = [
-    const AppointmentStatus(),
-    ChatScreen(uid: FirebaseAuth.instance.currentUser!.uid.toString()),
-    const FileHome(),
-    // const LawsAndActs(),
-  ];
+  List<Widget> pages = [];
+  
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: pageIndex);
+    pages = [
+      AppointmentStatus(
+        AdminId: widget.adminID,
+      ),
+      ChatScreen(uid: FirebaseAuth.instance.currentUser!.uid.toString()),
+      const FileHome(),
+      // const LawsAndActs(),
+    ];
   }
 
   @override
