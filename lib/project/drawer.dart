@@ -117,57 +117,56 @@ class _NavDrawerState extends State<NavDrawer> {
                       ),
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      
-                      AwesomeDialog(
-                        context: context,
-                        dialogType: DialogType.infoReverse,
-                        animType: AnimType.bottomSlide,
-                        headerAnimationLoop: false,
-                        title: 'Signout?',
-                        desc: 'Do you really want to signout?',
-                        btnOkOnPress: () async {
-                          String? token= await storage.read(key:'user_access_token');
-                          log(token.toString());
-                          await userlogout(token!);
-                          await storage.delete(key: 'user_type');
-                          await GoogleSignIn().signOut();
-                          // await GoogleSignIn().disconnect();
-                          await _auth.signOut();
-                          if (!mounted) return;
-                          LocalUser.uid = null;
-                          AdminInfo.uid = null;
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const LoginScreen()),
-                              (route) => false);
-                        },
-                        btnCancelOnPress: () {},
-                        dismissOnTouchOutside: false,
-                      ).show();
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(5),
-                      child: Row(
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Icon(
-                              Icons.logout_rounded,
-                              size: 30,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text('Logout',
-                              style:
-                                  TextStyle(fontSize: 18, fontFamily: 'Lato'))
-                        ],
-                      ),
-                    ),
-                  ),
+                  // InkWell(
+                  //   onTap: () {
+                  //     AwesomeDialog(
+                  //       context: context,
+                  //       dialogType: DialogType.infoReverse,
+                  //       animType: AnimType.bottomSlide,
+                  //       headerAnimationLoop: false,
+                  //       title: 'Signout?',
+                  //       desc: 'Do you really want to signout?',
+                  //       btnOkOnPress: () async {
+                  //         String? token= await storage.read(key:'user_access_token');
+                  //         log(token.toString());
+                  //         await userlogout(token!);
+                  //         await storage.delete(key: 'user_type');
+                  //         await GoogleSignIn().signOut();
+                  //         // await GoogleSignIn().disconnect();
+                  //         await _auth.signOut();
+                  //         if (!mounted) return;
+                  //         LocalUser.uid = null;
+                  //         AdminInfo.uid = null;
+                  //         Navigator.pushAndRemoveUntil(
+                  //             context,
+                  //             MaterialPageRoute(
+                  //                 builder: (BuildContext context) =>
+                  //                     const LoginScreen()),
+                  //             (route) => false);
+                  //       },
+                  //       btnCancelOnPress: () {},
+                  //       dismissOnTouchOutside: false,
+                  //     ).show();
+                  //   },
+                  //   child: Container(
+                  //     margin: const EdgeInsets.all(5),
+                  //     child: Row(
+                  //       children: const [
+                  //         Padding(
+                  //           padding: EdgeInsets.all(10.0),
+                  //           child: Icon(
+                  //             Icons.logout_rounded,
+                  //             size: 30,
+                  //             color: Colors.white,
+                  //           ),
+                  //         ),
+                  //         Text('Logout',
+                  //             style:
+                  //                 TextStyle(fontSize: 18, fontFamily: 'Lato'))
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

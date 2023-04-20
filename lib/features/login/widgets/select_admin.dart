@@ -1,11 +1,19 @@
 import 'dart:developer';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:darkknightspict/api/user_api.dart';
+import 'package:darkknightspict/features/login/login.dart';
 import 'package:darkknightspict/features/login/widgets/filter_admins.dart';
 import 'package:darkknightspict/models/admin.dart';
+import 'package:darkknightspict/models/admin_info.dart';
+import 'package:darkknightspict/models/user.dart';
 import 'package:darkknightspict/project/bottombar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
+final storage= const FlutterSecureStorage();
 class SelectAdmin extends StatefulWidget {
   String token;
   SelectAdmin({Key? key, required this.token}) : super(key: key);
@@ -16,16 +24,9 @@ class SelectAdmin extends StatefulWidget {
 
 class _SelectAdminState extends State<SelectAdmin> {
   late Future admins;
-  //  Future<List<AdminData>> getAdminList(String profession) async {
-  // String? token= await storage.read(key: 'user_access_token');
-  // final admins = await getAdmin(token!);
-  // return admins;
-  // }
-  // @override
-  // void initState() {
-  //   admins = getAdmin(widget.token);
-  //   super.initState();
-  // }
+  final user = FirebaseAuth.instance.currentUser;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,40 @@ class _SelectAdminState extends State<SelectAdmin> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {},
+            onPressed: () {
+              //Log out 
+
+              AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.infoReverse,
+                        animType: AnimType.bottomSlide,
+                        headerAnimationLoop: false,
+                        title: 'Signout?',
+                        desc: 'Do you really want to signout?',
+                        btnOkOnPress: () async {
+                          String? token= await storage.read(key:'user_access_token');
+                          log(token.toString());
+                          await userlogout(token!);
+                          await storage.delete(key: 'user_type');
+                          await GoogleSignIn().signOut();
+                          // await GoogleSignIn().disconnect();
+                          await _auth.signOut();
+                          if (!mounted) return;
+                          LocalUser.uid = null;
+                          AdminInfo.uid = null;
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const LoginScreen()),
+                              (route) => false);
+                        },
+                        btnCancelOnPress: () {},
+                        dismissOnTouchOutside: false,
+                      ).show();
+
+
+            },
           ),
         ],
         backgroundColor: const Color(0xff010413),
