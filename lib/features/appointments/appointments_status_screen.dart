@@ -9,6 +9,7 @@ import 'package:googleapis_auth/auth_io.dart';
 import 'package:intl/intl.dart';
 
 import '../../project/drawer.dart';
+import '../video/user_video_home.dart';
 import 'widgets/slot_booking_widget.dart';
 
 import 'package:googleapis_auth/googleapis_auth.dart';
@@ -47,6 +48,8 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
     log(token!.toString());
 
     dio.options.headers['Authorization'] = 'Bearer $token';
+
+    print(widget.AdminId.toString());
 
     Response response = await dio.get(
         "https://client-hive.onrender.com/api/user/appointment/${widget.AdminId}");
@@ -169,6 +172,8 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                         future: appointments,
                         builder: (context, snapshot) {
                           if (snapshot.hasData && snapshot.data != null) {
+                            print(snapshot.data!.length.toString());
+
                             return snapshot.data!.isEmpty
                                 ? const Center(
                                     child: Text(
@@ -198,21 +203,23 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                         col = Colors.red;
                                       }
 
-                                      print(DateTime.now());
-                                      print(DateTime.parse(
-                                          snapshot.data![index]['startTime']));
-                                      print(DateTime.parse(
-                                          snapshot.data![index]['endTime']));
+                                      DateTime startTime = DateTime.parse(
+                                          snapshot.data![index]['startTime']);
 
-                                      int result1 = DateTime.parse(snapshot
-                                              .data![index]['startTime'])
-                                          .compareTo(DateTime.now());
+                                      DateTime endTime = DateTime.parse(
+                                          snapshot.data![index]['endTime']);
 
-                                      int result2 = DateTime.parse(
-                                              snapshot.data![index]['endTime'])
-                                          .compareTo(DateTime.now());
+                                      DateTime currentTime = DateTime.parse(
+                                          DateFormat(
+                                                  "yyyy-MM-dd' 'HH:mm:ss.SSS'Z'")
+                                              .format(DateTime.now()));
 
-                                      return (result1 >= 0 || result2 <= 0)
+                                      print(startTime);
+                                      print(endTime);
+                                      print(currentTime);
+                                      print(currentTime.isBefore(endTime));
+
+                                      return currentTime.isBefore(endTime)
                                           ? Container(
                                               margin:
                                                   const EdgeInsets.symmetric(
@@ -336,12 +343,27 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                                           'ACCEPTED'
                                                       ? GestureDetector(
                                                           onTap: () {
-                                                            Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            VideoAdminScreen()));
+                                                            
+                                                            if (currentTime.isAfter(
+                                                                    startTime) &&
+                                                                currentTime
+                                                                    .isBefore(
+                                                                        endTime)) {
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              VideoUserScreen()));
+                                                            } else {
+                                                              ScaffoldMessenger
+                                                                      .of(
+                                                                          context)
+                                                                  .showSnackBar(
+                                                                      const SnackBar(
+                                                                          content:
+                                                                              Text("You can only join the call during the appointment time")));
+                                                            }
                                                           },
                                                           child: Container(
                                                             decoration:
@@ -394,7 +416,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                                 ]),
                                               ),
                                             )
-                                          : null;
+                                          : Container();
                                     },
                                   );
                           }

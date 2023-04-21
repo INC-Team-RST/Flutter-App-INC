@@ -8,6 +8,10 @@ import 'package:darkknightspict/packages/calender/flutter_clean_calendar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:intl/intl.dart';
+
+import '../video/admin_video_home.dart';
+import '../video/user_video_home.dart';
 
 const storage = FlutterSecureStorage();
 
@@ -41,6 +45,8 @@ class _ClientStatusState extends State<ClientStatus> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+
     const List<Tab> tabs = <Tab>[
       Tab(
           child: Text(
@@ -133,39 +139,191 @@ class _ClientStatusState extends State<ClientStatus> {
                               itemCount: appointments.length,
                               itemBuilder: (context, index) {
                                 if (appointments[index].status == "ACCEPTED") {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xff403ffc),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: ListTile(
-                                        title: Text(
-                                          appointments[index].userName,
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Lato'),
-                                        ),
-                                        subtitle: Text(
-                                          appointments[index].userEmail,
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Lato'),
-                                        ),
-                                        trailing: Text(
-                                          appointments[index].status,
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.greenAccent,
-                                              fontFamily: 'Lato'),
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                                  DateTime startTime = DateTime.parse(
+                                      appointments[index].startTime);
+
+                                  DateTime endTime = DateTime.parse(
+                                      appointments[index].endTime);
+
+                                  DateTime currentTime = DateTime.parse(
+                                      DateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS'Z'")
+                                          .format(DateTime.now()));
+                                  print(startTime);
+                                  print(endTime);
+                                  print(currentTime);
+                                  print(currentTime.isBefore(endTime));
+
+                                  return currentTime.isBefore(endTime)
+                                      ? Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xff403ffc),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Container(
+                                              padding: const EdgeInsets.all(10),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      Column(
+                                                        children: [
+                                                          Text(
+                                                            appointments[index]
+                                                                .userName,
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontFamily:
+                                                                    'Lato'),
+                                                          ),
+                                                          Text(
+                                                            appointments[index]
+                                                                .userEmail,
+                                                            style:
+                                                                const TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontFamily:
+                                                                        'Lato'),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Text(
+                                                        appointments[index]
+                                                            .status,
+                                                        style: const TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors
+                                                                .greenAccent,
+                                                            fontFamily: 'Lato'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: height * 0.015,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      Text(
+                                                        DateFormat('h:mm a')
+                                                            .format(DateTime.parse(
+                                                                appointments[
+                                                                        index]
+                                                                    .startTime)),
+                                                        style: const TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontFamily: 'Lato'),
+                                                      ),
+                                                      const Text(
+                                                        'to',
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontFamily: 'Lato'),
+                                                      ),
+                                                      Text(
+                                                        DateFormat('h:mm a')
+                                                            .format(DateTime.parse(
+                                                                appointments[
+                                                                        index]
+                                                                    .endTime)),
+                                                        style: const TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontFamily: 'Lato'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      if (currentTime.isAfter(
+                                                              startTime) &&
+                                                          currentTime.isBefore(
+                                                              endTime)) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        VideoAdminScreen()));
+                                                      } else {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                                const SnackBar(
+                                                                    content: Text(
+                                                                        "You can only join the call during the appointment time")));
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        color:
+                                                            Color(0xff5ad0b5),
+                                                      ),
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              top: 20),
+                                                      height: height * 0.06,
+                                                      width: height * 0.3,
+                                                      child: Center(
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceAround,
+                                                          children: [
+                                                            Text(
+                                                              "Go to Video Call",
+                                                              style: TextStyle(
+                                                                fontFamily:
+                                                                    'Lato',
+                                                                fontSize: 22,
+                                                                color: Colors
+                                                                    .black54,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            Icon(Icons
+                                                                .video_call),
+                                                            Icon(Icons
+                                                                .navigate_next_outlined)
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container();
                                 } else {
                                   return Container();
                                 }
@@ -356,7 +514,7 @@ class _ClientStatusState extends State<ClientStatus> {
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: Text(
-                                                  'Date : ${appointments[index].date}',
+                                                  'Date : ${DateFormat('yyyy-MM-dd').format(DateTime.parse(appointments[index].date))}',
                                                   style: const TextStyle(
                                                       fontSize: 18,
                                                       color: Colors.white,
@@ -367,7 +525,7 @@ class _ClientStatusState extends State<ClientStatus> {
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: Text(
-                                                  'From : ${appointments[index].startTime}',
+                                                  'From : ${DateFormat('h:mm a').format(DateTime.parse(appointments[index].startTime).toUtc())}',
                                                   style: const TextStyle(
                                                       fontSize: 18,
                                                       color: Colors.white,
@@ -378,7 +536,7 @@ class _ClientStatusState extends State<ClientStatus> {
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: Text(
-                                                  'To : ${appointments[index].endTime}',
+                                                  'To : ${DateFormat('h:mm a').format(DateTime.parse(appointments[index].endTime).toUtc())}',
                                                   style: const TextStyle(
                                                       fontSize: 18,
                                                       color: Colors.white,
@@ -453,7 +611,11 @@ class _ClientStatusState extends State<ClientStatus> {
                                                               "status":
                                                                   "REJECTED"
                                                             });
-                                                        log(response.data);
+                                                        log(response.toString());
+
+                                                        setState(() {
+                                                          getAppointments();
+                                                        });
                                                       } catch (e) {
                                                         log(e.toString());
                                                       }
@@ -475,7 +637,7 @@ class _ClientStatusState extends State<ClientStatus> {
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: Text(
-                                                  appointments[index].status,
+                                                  'Status : ${appointments[index].status}',
                                                   style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -491,28 +653,7 @@ class _ClientStatusState extends State<ClientStatus> {
                                     ),
                                   );
                                 } else {
-                                  return Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.35),
-                                      const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Text(
-                                          'No Appointments pending',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Lato'),
-                                        ),
-                                      ),
-                                    ],
-                                  );
+                                  return Container();
                                 }
                               },
                             );
