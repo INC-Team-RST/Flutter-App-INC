@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 
-final storage = const FlutterSecureStorage();
-
 class AdminAppointments extends StatefulWidget {
   const AdminAppointments({Key? key}) : super(key: key);
 
@@ -15,7 +13,8 @@ class AdminAppointments extends StatefulWidget {
 }
 
 class _AdminAppointmentsState extends State<AdminAppointments> {
-  late Future<List> appointments;
+  final storage = const FlutterSecureStorage();
+  Future<List>? appointments;
 
   Future<List> getAdminAppointments() async {
     String? token = await storage.read(key: 'admin_access_token');
@@ -35,7 +34,6 @@ class _AdminAppointmentsState extends State<AdminAppointments> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     appointments = getAdminAppointments();
   }
@@ -45,11 +43,10 @@ class _AdminAppointmentsState extends State<AdminAppointments> {
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: const Color(0xff010413),
       body: FutureBuilder(
         future: appointments,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print(snapshot.data);
-
           if (snapshot.hasError) {
             return const Center(
               child: Text('Error'),
@@ -59,7 +56,17 @@ class _AdminAppointmentsState extends State<AdminAppointments> {
           if (snapshot.hasData && snapshot.data != null) {
             if (snapshot.data.length == 0) {
               return const Center(
-                child: Text('No Appointments'),
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text(
+                    'No Appointments have been booked yet',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               );
             }
             return ListView.builder(
@@ -83,94 +90,101 @@ class _AdminAppointmentsState extends State<AdminAppointments> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(18.0),
-                    child: Column(children: [
-                      const Text(
-                        "Appointment Date",
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 22,
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
+                    child: Column(
+                      children: [
+                        const Text(
+                          "Appointment Date",
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            fontSize: 22,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Text(
-                        DateFormat('yyyy-MM-dd').format(
-                            DateTime.parse(snapshot.data![index]['date'])),
-                        style: const TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 22,
-                          color: Color(0xff5ad0b5),
-                          fontWeight: FontWeight.bold,
+                        Text(
+                          DateFormat('yyyy-MM-dd').format(
+                            DateTime.parse(
+                              snapshot.data![index]['date'],
+                            ),
+                          ),
+                          style: const TextStyle(
+                            fontFamily: 'Lato',
+                            fontSize: 22,
+                            color: Color(0xff5ad0b5),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: height * 0.02,
-                      ),
-                      const Text(
-                        "Appointment Start Time",
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 22,
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
+                        SizedBox(
+                          height: height * 0.02,
                         ),
-                      ),
-                      Text(
-                        DateFormat('h:mm a').format(
+                        const Text(
+                          "Appointment Start Time",
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            fontSize: 22,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          DateFormat('h:mm a').format(
                             DateTime.parse(snapshot.data![index]['startTime'])
-                                .toLocal()),
-                        style: const TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 22,
-                          color: Color(0xff5ad0b5),
-                          fontWeight: FontWeight.bold,
+                                .toLocal(),
+                          ),
+                          style: const TextStyle(
+                            fontFamily: 'Lato',
+                            fontSize: 22,
+                            color: Color(0xff5ad0b5),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: height * 0.02,
-                      ),
-                      const Text(
-                        "Appointment End Time",
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 22,
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
+                        SizedBox(
+                          height: height * 0.02,
                         ),
-                      ),
-                      Text(
-                        DateFormat('h:mm a').format(
+                        const Text(
+                          "Appointment End Time",
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            fontSize: 22,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          DateFormat('h:mm a').format(
                             DateTime.parse(snapshot.data![index]['endTime'])
-                                .toLocal()),
-                        style: const TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 22,
-                          color: Color(0xff5ad0b5),
-                          fontWeight: FontWeight.bold,
+                                .toLocal(),
+                          ),
+                          style: const TextStyle(
+                            fontFamily: 'Lato',
+                            fontSize: 22,
+                            color: Color(0xff5ad0b5),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: height * 0.02,
-                      ),
-                      const Text(
-                        "Status",
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 22,
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
+                        SizedBox(
+                          height: height * 0.02,
                         ),
-                      ),
-                      Text(
-                        snapshot.data![index]['status'],
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 22,
-                          color: col,
-                          fontWeight: FontWeight.bold,
+                        const Text(
+                          "Status",
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            fontSize: 22,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      )
-                    ]),
+                        Text(
+                          snapshot.data![index]['status'],
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            fontSize: 22,
+                            color: col,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 );
               },

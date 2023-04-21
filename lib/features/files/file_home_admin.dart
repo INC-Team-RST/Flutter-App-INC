@@ -1,22 +1,19 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../models/select_client_details.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../models/admin_info.dart';
 import '../../services/file_picker_user.dart';
-import 'widgets/file_display_widget.dart';
 
 const storage = FlutterSecureStorage();
 
 _launchURL(url) async {
-  print(url);
   if (await canLaunch(url)) {
     await launch(url);
   } else {
@@ -25,7 +22,7 @@ _launchURL(url) async {
 }
 
 class FileHomeAdmin extends StatefulWidget {
-  FileHomeAdmin({required this.userId});
+  const FileHomeAdmin({Key? key, required this.userId}) : super(key: key);
 
   final int userId;
 
@@ -34,8 +31,7 @@ class FileHomeAdmin extends StatefulWidget {
 }
 
 class _FileHomeAdminState extends State<FileHomeAdmin> {
-  @override
-  late Future<List> docs;
+  Future<List>? docs;
 
   @override
   void initState() {
@@ -74,6 +70,7 @@ class _FileHomeAdminState extends State<FileHomeAdmin> {
                 docs = getDocs();
               });
             },
+            icon: const Icon(Icons.upload_file),
             label: const Text(
               'Upload',
               style: TextStyle(
@@ -83,6 +80,7 @@ class _FileHomeAdminState extends State<FileHomeAdmin> {
               ),
             ),
           ),
+          backgroundColor: const Color(0xff010413),
           appBar: AppBar(
             backgroundColor: const Color(0xff010413),
             title: const Text(
@@ -95,11 +93,10 @@ class _FileHomeAdminState extends State<FileHomeAdmin> {
             ),
           ),
           body: Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: FutureBuilder<List>(
               future: docs,
               builder: (context, snapshot) {
-                print(snapshot.data);
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -118,8 +115,6 @@ class _FileHomeAdminState extends State<FileHomeAdmin> {
                       ),
                     );
                   }
-
-                  print(data[0]["url"]);
 
                   return ListView.builder(
                       itemCount: data.length,
@@ -367,7 +362,7 @@ class _FileHomeAdminState extends State<FileHomeAdmin> {
                                       btnOkOnPress: () {},
                                     ).show();
                                   },
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.share,
                                     color: Colors.white,
                                   ),

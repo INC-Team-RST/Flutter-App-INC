@@ -1,11 +1,10 @@
-import '../features/files/file_home_shared_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../features/appointments/appointments_status_screen.dart';
 import '../features/chat/chat_screen.dart';
 import '../features/files/file_home.dart';
-import '../features/laws/laws.dart';
+import '../features/files/file_home_shared_user.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({required this.adminID});

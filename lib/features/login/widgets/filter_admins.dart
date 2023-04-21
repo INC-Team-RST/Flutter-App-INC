@@ -134,13 +134,7 @@ class _FilterAdminState extends State<FilterAdmin> {
                           child: Card(
                             color: const Color(0xff5ad0b5),
                             elevation: 4.0,
-                            // margin: const EdgeInsets.symmetric(
-                            //     horizontal: 10.0, vertical: 6.0),
                             child: ListTile(
-                              // contentPadding: const EdgeInsets.symmetric(
-                              //   horizontal: 20.0,
-                              //   vertical: 10.0,
-                              // ),
                               leading: CircleAvatar(
                                 backgroundImage:
                                     NetworkImage(adminList[index].photoURL),
