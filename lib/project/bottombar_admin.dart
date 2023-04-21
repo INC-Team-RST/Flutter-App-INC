@@ -1,3 +1,4 @@
+import 'package:darkknightspict/features/video/admin_video_home.dart';
 import 'package:darkknightspict/features/files/file_home_shared_admin.dart';
 import 'package:darkknightspict/features/laws/laws.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ class _BottomBarCAState extends State<BottomBarCA> {
       ClientStatus(
         UserId: widget.UserId,
       ),
+      // VideoAdminScreen(),
       ChatHome(),
       FileHomeAdmin(
         userId: widget.UserId,

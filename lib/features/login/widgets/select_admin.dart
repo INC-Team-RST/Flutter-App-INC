@@ -13,7 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-final storage= const FlutterSecureStorage();
+final storage = const FlutterSecureStorage();
+
 class SelectAdmin extends StatefulWidget {
   String token;
   SelectAdmin({Key? key, required this.token}) : super(key: key);
@@ -26,7 +27,6 @@ class _SelectAdminState extends State<SelectAdmin> {
   late Future admins;
   final user = FirebaseAuth.instance.currentUser;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -37,38 +37,36 @@ class _SelectAdminState extends State<SelectAdmin> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              //Log out 
+              //Log out
 
               AwesomeDialog(
-                        context: context,
-                        dialogType: DialogType.infoReverse,
-                        animType: AnimType.bottomSlide,
-                        headerAnimationLoop: false,
-                        title: 'Signout?',
-                        desc: 'Do you really want to signout?',
-                        btnOkOnPress: () async {
-                          String? token= await storage.read(key:'user_access_token');
-                          log(token.toString());
-                          await userlogout(token!);
-                          await storage.delete(key: 'user_type');
-                          await GoogleSignIn().signOut();
-                          // await GoogleSignIn().disconnect();
-                          await _auth.signOut();
-                          if (!mounted) return;
-                          LocalUser.uid = null;
-                          AdminInfo.uid = null;
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const LoginScreen()),
-                              (route) => false);
-                        },
-                        btnCancelOnPress: () {},
-                        dismissOnTouchOutside: false,
-                      ).show();
-
-
+                context: context,
+                dialogType: DialogType.infoReverse,
+                animType: AnimType.bottomSlide,
+                headerAnimationLoop: false,
+                title: 'Signout?',
+                desc: 'Do you really want to signout?',
+                btnOkOnPress: () async {
+                  String? token = await storage.read(key: 'user_access_token');
+                  log(token.toString());
+                  await userlogout(token!);
+                  await storage.delete(key: 'user_type');
+                  await GoogleSignIn().signOut();
+                  // await GoogleSignIn().disconnect();
+                  await _auth.signOut();
+                  if (!mounted) return;
+                  LocalUser.uid = null;
+                  AdminInfo.uid = null;
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const LoginScreen()),
+                      (route) => false);
+                },
+                btnCancelOnPress: () {},
+                dismissOnTouchOutside: false,
+              ).show();
             },
           ),
         ],
@@ -93,7 +91,7 @@ class _SelectAdminState extends State<SelectAdmin> {
               );
             }
             List<AdminData> admins = snapshot.data!;
-            log(admins[0].id.toString()) ;
+            log(admins[0].id.toString());
             return ListView.builder(
               itemCount: admins.length,
               itemBuilder: (context, index) {
@@ -102,7 +100,9 @@ class _SelectAdminState extends State<SelectAdmin> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => BottomBar(adminID: admins[index].id,)));
+                            builder: (context) => BottomBar(
+                                  adminID: admins[index].id,
+                                )));
                   },
                   child: ListTile(
                     title: Text(admins[index].displayName),
@@ -120,8 +120,13 @@ class _SelectAdminState extends State<SelectAdmin> {
       ),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const FilterAdmin()));
+            Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const FilterAdmin()))
+                .then((value) => setState(() {
+                      getAdmin(widget.token);
+                    }));
           },
           label: const Text('+ Add Admin')),
     );

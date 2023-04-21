@@ -132,8 +132,7 @@ class _ClientStatusState extends State<ClientStatus> {
                             return ListView.builder(
                               itemCount: appointments.length,
                               itemBuilder: (context, index) {
-                                if (appointments[index].status ==
-                                    "ACCEPTED") {
+                                if (appointments[index].status == "ACCEPTED") {
                                   return Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Container(
@@ -146,7 +145,7 @@ class _ClientStatusState extends State<ClientStatus> {
                                           appointments[index].userName,
                                           style: const TextStyle(
                                               color: Colors.white,
-                                              fontSize:20,
+                                              fontSize: 20,
                                               fontWeight: FontWeight.bold,
                                               fontFamily: 'Lato'),
                                         ),
@@ -159,8 +158,8 @@ class _ClientStatusState extends State<ClientStatus> {
                                         trailing: Text(
                                           appointments[index].status,
                                           style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
                                               color: Colors.greenAccent,
                                               fontFamily: 'Lato'),
                                         ),
@@ -414,6 +413,10 @@ class _ClientStatusState extends State<ClientStatus> {
                                                           log(response
                                                               .toString());
                                                           // log(response.data);
+
+                                                          setState(() {
+                                                            getAppointments();
+                                                          });
                                                         } catch (e) {
                                                           log(e.toString());
                                                         }

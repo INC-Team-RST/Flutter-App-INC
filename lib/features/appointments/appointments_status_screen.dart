@@ -1,13 +1,18 @@
 import 'dart:developer';
 
+import 'package:darkknightspict/features/video/admin_video_home.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:googleapis_auth/auth_io.dart';
 import 'package:intl/intl.dart';
 
 import '../../project/drawer.dart';
 import 'widgets/slot_booking_widget.dart';
+
+import 'package:googleapis_auth/googleapis_auth.dart';
+import 'package:googleapis/calendar/v3.dart' as calendar;
 
 const storage = FlutterSecureStorage();
 
@@ -43,8 +48,8 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
 
     dio.options.headers['Authorization'] = 'Bearer $token';
 
-    Response response =
-        await dio.get("https://client-hive.onrender.com/api/user/appointment/${widget.AdminId}");
+    Response response = await dio.get(
+        "https://client-hive.onrender.com/api/user/appointment/${widget.AdminId}");
 
     log(response.toString());
 
@@ -193,111 +198,203 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                         col = Colors.red;
                                       }
 
-                                      return Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 30, vertical: 10),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: Colors.white,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(18.0),
-                                          child: Column(children: [
-                                            const Text(
-                                              "Appointment Date",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                fontSize: 22,
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold,
+                                      print(DateTime.now());
+                                      print(DateTime.parse(
+                                          snapshot.data![index]['startTime']));
+                                      print(DateTime.parse(
+                                          snapshot.data![index]['endTime']));
+
+                                      int result1 = DateTime.parse(snapshot
+                                              .data![index]['startTime'])
+                                          .compareTo(DateTime.now());
+
+                                      int result2 = DateTime.parse(
+                                              snapshot.data![index]['endTime'])
+                                          .compareTo(DateTime.now());
+
+                                      return (result1 >= 0 || result2 <= 0)
+                                          ? Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 30,
+                                                      vertical: 10),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Colors.white,
                                               ),
-                                            ),
-                                            Text(
-                                              DateFormat('yyyy-MM-dd').format(
-                                                  DateTime.parse(snapshot
-                                                      .data![index]['date'])),
-                                              style: const TextStyle(
-                                                fontFamily: 'Lato',
-                                                fontSize: 22,
-                                                color: Color(0xff5ad0b5),
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: height * 0.02,
-                                            ),
-                                            const Text(
-                                              "Appointment Start Time",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                fontSize: 22,
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              DateFormat('h:mm a').format(
-                                                  DateTime.parse(
-                                                          snapshot.data![index]
-                                                              ['startTime'])
-                                                      .toLocal()),
-                                              style: const TextStyle(
-                                                fontFamily: 'Lato',
-                                                fontSize: 22,
-                                                color: Color(0xff5ad0b5),
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: height * 0.02,
-                                            ),
-                                            const Text(
-                                              "Appointment End Time",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                fontSize: 22,
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              DateFormat('h:mm a').format(
-                                                  DateTime.parse(
-                                                          snapshot.data![index]
-                                                              ['endTime'])
-                                                      .toLocal()),
-                                              style: const TextStyle(
-                                                fontFamily: 'Lato',
-                                                fontSize: 22,
-                                                color: Color(0xff5ad0b5),
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: height * 0.02,
-                                            ),
-                                            const Text(
-                                              "Status",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                fontSize: 22,
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              snapshot.data![index]['status'],
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                fontSize: 22,
-                                                color: col,
-                                                fontWeight: FontWeight.bold,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(18.0),
+                                                child: Column(children: [
+                                                  const Text(
+                                                    "Appointment Date",
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      fontSize: 22,
+                                                      color: Colors.black54,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    DateFormat('yyyy-MM-dd')
+                                                        .format(DateTime.parse(
+                                                            snapshot.data![
+                                                                    index]
+                                                                ['date'])),
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      fontSize: 22,
+                                                      color: Color(0xff5ad0b5),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: height * 0.02,
+                                                  ),
+                                                  const Text(
+                                                    "Appointment Start Time",
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      fontSize: 22,
+                                                      color: Colors.black54,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    DateFormat('h:mm a').format(
+                                                        DateTime.parse(snapshot
+                                                                        .data![
+                                                                    index]
+                                                                ['startTime'])
+                                                            .toUtc()),
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      fontSize: 22,
+                                                      color: Color(0xff5ad0b5),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: height * 0.02,
+                                                  ),
+                                                  const Text(
+                                                    "Appointment End Time",
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      fontSize: 22,
+                                                      color: Colors.black54,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    DateFormat('h:mm a').format(
+                                                        DateTime.parse(
+                                                                snapshot.data![
+                                                                        index]
+                                                                    ['endTime'])
+                                                            .toUtc()),
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      fontSize: 22,
+                                                      color: Color(0xff5ad0b5),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: height * 0.02,
+                                                  ),
+                                                  const Text(
+                                                    "Status",
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      fontSize: 22,
+                                                      color: Colors.black54,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    snapshot.data![index]
+                                                        ['status'],
+                                                    style: TextStyle(
+                                                      fontFamily: 'Lato',
+                                                      fontSize: 22,
+                                                      color: col,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  snapshot.data![index]
+                                                              ['status'] ==
+                                                          'ACCEPTED'
+                                                      ? GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            VideoAdminScreen()));
+                                                          },
+                                                          child: Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              color: Color(
+                                                                  0xff5ad0b5),
+                                                            ),
+                                                            margin:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 20),
+                                                            height:
+                                                                height * 0.06,
+                                                            width: height * 0.3,
+                                                            child: Center(
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceAround,
+                                                                children: [
+                                                                  Text(
+                                                                    "Go to Video Call",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontFamily:
+                                                                          'Lato',
+                                                                      fontSize:
+                                                                          22,
+                                                                      color: Colors
+                                                                          .black54,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                  Icon(Icons
+                                                                      .video_call),
+                                                                  Icon(Icons
+                                                                      .navigate_next_outlined)
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : Container(),
+                                                ]),
                                               ),
                                             )
-                                          ]),
-                                        ),
-                                      );
+                                          : null;
                                     },
                                   );
                           }
