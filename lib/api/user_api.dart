@@ -145,3 +145,34 @@ Future<void> addAdminData(int id, String token) async {
     log(e.toString());
   }
 }
+
+Future<List<AdminAppointment>> getAdminAppointments(int id, String accessToken) async {
+  List<AdminAppointment> appointments = [];
+  try{
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers['Authorization']='Bearer $accessToken';
+    Response response = await dio.get('https://client-hive.onrender.com/api/admin/appointment/$id');
+    log(response.data.toString());
+    for(var data in response.data){
+      AdminAppointment appointment = AdminAppointment(
+        id: data['id'],
+        userId: data['userId'],
+        adminId: data['adminId'],
+        userName: data['userName'],
+        userEmail: data['userEmail'],
+        userPhone: data['userPhone'],
+        userPhotoURL: data['userPhotoURL'],
+        status: data['status'],
+        startTime: data['startTime'],
+        endTime: data['endTime'],
+        date: data['date'],
+      );
+      appointments.add(appointment);
+    }
+    log(appointments.toString());
+    return appointments;
+  }catch(e){
+    log(e.toString());
+    throw Exception(e);
+  }
+}
