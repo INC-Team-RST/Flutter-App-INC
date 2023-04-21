@@ -74,10 +74,11 @@ class _SelectAdminState extends State<SelectAdmin> {
         title: const Text(
           'My Admins',
           style: TextStyle(
-              color: Color(0xff5ad0b5),
-              fontWeight: FontWeight.bold,
-              fontSize: 25,
-              fontFamily: 'Lato'),
+            color: Color(0xff5ad0b5),
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            fontFamily: 'Lato',
+          ),
         ),
       ),
       backgroundColor: const Color(0xff010413),

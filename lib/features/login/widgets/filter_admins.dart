@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import '../../../api/user_api.dart';
@@ -38,20 +40,38 @@ class _FilterAdminState extends State<FilterAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color(0xff010413),
+        title: const Text(
+          'My Admins',
+          style: TextStyle(
+            color: Color(0xff5ad0b5),
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            fontFamily: 'Lato',
+          ),
+        ),
         actions: [
           IconButton(
-              onPressed: () async {
-                String? token = await storage.read(key: 'user_access_token');
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SelectAdmin(
-                              token: token!,
-                            )));
-              },
-              icon: const Icon(Icons.arrow_back_ios, color: Color(0xff5ad0b5))),
+            onPressed: () async {
+              String? token = await storage.read(key: 'user_access_token');
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SelectAdmin(
+                    token: token!,
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Color(0xff5ad0b5),
+            ),
+          ),
         ],
       ),
+      backgroundColor: const Color(0xff010413),
       body: Column(
         children: [
           const Text(
@@ -66,24 +86,28 @@ class _FilterAdminState extends State<FilterAdmin> {
             height: 20,
           ),
           DropdownButton(
-            items: professions.map((String professions) {
-              return DropdownMenuItem(
-                  value: professions, child: Text(professions));
-            }).toList(),
+            items: professions.map(
+              (String professions) {
+                return DropdownMenuItem(
+                    value: professions, child: Text(professions));
+              },
+            ).toList(),
             onChanged: (String? newValue) {
-              setState(() {
-                dropdownValue = newValue!;
-              });
+              setState(
+                () {
+                  dropdownValue = newValue!;
+                },
+              );
             },
             value: dropdownValue,
           ),
-          ElevatedButton(
-            onPressed: () async {
-              final String? token =
-                  await storage.read(key: 'user_access_token');
-            },
-            child: const Text('Search'),
-          ),
+          // ElevatedButton(
+          //   onPressed: () async {
+          //     final String? token =
+          //         await storage.read(key: 'user_access_token');
+          //   },
+          //   child: const Text('Search'),
+          // ),
           Expanded(
             child: FutureBuilder<List<AdminData>>(
               future: getAdminsAll(dropdownValue),
@@ -101,9 +125,48 @@ class _FilterAdminState extends State<FilterAdmin> {
                           await addAdminData(adminList[index].id, token!);
                           Navigator.pop(context);
                         },
-                        child: ListTile(
-                          title: Text(adminList[index].displayName),
-                          subtitle: Text(adminList[index].profession),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 5.0,
+                            left: 10.0,
+                            right: 10.0,
+                          ),
+                          child: Card(
+                            color: const Color(0xff5ad0b5),
+                            elevation: 4.0,
+                            // margin: const EdgeInsets.symmetric(
+                            //     horizontal: 10.0, vertical: 6.0),
+                            child: ListTile(
+                              // contentPadding: const EdgeInsets.symmetric(
+                              //   horizontal: 20.0,
+                              //   vertical: 10.0,
+                              // ),
+                              leading: CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(adminList[index].photoURL),
+                              ),
+                              title: Text(
+                                adminList[index].displayName,
+                                style: const TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(
+                                adminList[index].emailId,
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: () {
+                                  // launch('tel:${adminList[index].phone}');
+                                },
+                              ),
+                            ),
+                          ),
                         ),
                       );
                     },

@@ -86,10 +86,11 @@ class _FileHomeState extends State<FileHome> {
             title: const Text(
               'Documents',
               style: TextStyle(
-                  color: Color(0xff5ad0b5),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25,
-                  fontFamily: 'Lato'),
+                color: Color(0xff5ad0b5),
+                fontWeight: FontWeight.bold,
+                fontSize: 25,
+                fontFamily: 'Lato',
+              ),
             ),
           ),
           backgroundColor: const Color(0xff010413),
