@@ -9,6 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../api/admin_api.dart';
 import '../api/user_api.dart';
 import '../models/admin_info.dart';
+import '../models/user.dart';
 
 const storage = FlutterSecureStorage();
 
@@ -45,12 +46,14 @@ class SignIn {
             fontSize: 16.0);
       } else {
         await addUser(
-            accessToken: googleAuth.accessToken!,
-            email: userCredential.user!.email!,
-            name: userCredential.user!.displayName!,
-            uid: userCredential.user!.uid,
-            phone: "",
-            photoURL: userCredential.user!.photoURL!);
+          accessToken: googleAuth.accessToken!,
+          email: userCredential.user!.email!,
+          name: userCredential.user!.displayName!,
+          uid: userCredential.user!.uid,
+          phone: "",
+          photoURL: userCredential.user!.photoURL!,
+        );
+
         Fluttertoast.showToast(
             msg: "Login Successful, user added",
             toastLength: Toast.LENGTH_SHORT,
@@ -62,6 +65,10 @@ class SignIn {
       await storage.write(
           key: 'user_access_token', value: googleAuth.accessToken!);
       await storage.write(key: 'user_type', value: 'user');
+
+      // Update Current Instance
+      ClientUser.uidClient = userCredential.user!.email!;
+
       return googleAuth.accessToken!;
     } catch (e) {
       Fluttertoast.showToast(

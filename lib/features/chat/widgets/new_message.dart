@@ -1,12 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:darkknightspict/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/admin_info.dart';
-import '../../../models/select_client_details.dart';
-
 class NewMessage extends StatefulWidget {
-  const NewMessage({Key? key}) : super(key: key);
+  const NewMessage({
+    Key? key,
+    required this.uidClient,
+    required this.uidAdmin,
+  }) : super(key: key);
+
+  final String uidClient;
+  final String uidAdmin;
 
   @override
   State<NewMessage> createState() => _NewMessageState();
@@ -16,44 +21,28 @@ class _NewMessageState extends State<NewMessage> {
   final _controller = TextEditingController();
   var _enteredMesaage = "";
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void _sendMessage() async {
     final user = FirebaseAuth.instance.currentUser!;
-    FirebaseFirestore.instance
-        .collection('Users')
-        .doc(user.uid)
+
+    await FirebaseFirestore.instance
+        .collection('ChatRoom')
+        .doc("${widget.uidClient}_${widget.uidAdmin}")
         .collection('Chats')
         .add({
       "displayName": user.displayName,
       "phoneNumber": user.phoneNumber,
       "email": user.email,
       "photoURL": user.photoURL,
-      "uid": user.uid,
+      "uid": user.email,
       "createdAt": Timestamp.now(),
       "Message": _enteredMesaage,
     });
-    FirebaseFirestore.instance.collection('Users').doc(user.uid).update({
-      "lastMessageTime": Timestamp.now(),
-    });
-    _controller.clear();
-  }
 
-  void _sendMessageAdmin() async {
-    FirebaseFirestore.instance
-        .collection('Users')
-        .doc(chatwithUID)
-        .collection('Chats')
-        .add({
-      "displayName": AdminInfo.displayName,
-      "phoneNumber": AdminInfo.phoneNumber,
-      "email": AdminInfo.email,
-      "photoURL": AdminInfo.photoURL,
-      "uid": AdminInfo.uid,
-      "createdAt": Timestamp.now(),
-      "Message": _enteredMesaage,
-    });
-    FirebaseFirestore.instance.collection('Users').doc(chatwithUID).update({
-      "lastMessageTime": Timestamp.now(),
-    });
     _controller.clear();
   }
 
@@ -95,11 +84,7 @@ class _NewMessageState extends State<NewMessage> {
             ),
           ),
           IconButton(
-            onPressed: _enteredMesaage.trim().isEmpty
-                ? null
-                : AdminInfo.uid != null
-                    ? _sendMessageAdmin
-                    : _sendMessage,
+            onPressed: _enteredMesaage.trim().isEmpty ? null : _sendMessage,
             icon: const Icon(
               Icons.send,
               // color: Colors.black,

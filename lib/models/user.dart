@@ -6,3 +6,7 @@ class LocalUser {
   static bool? isCA;
   static String? caId;
 }
+
+class ClientUser {
+  static String? uidClient;
+}

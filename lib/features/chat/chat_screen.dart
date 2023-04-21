@@ -4,8 +4,18 @@ import 'widgets/messages.dart';
 import 'widgets/new_message.dart';
 
 class ChatScreen extends StatelessWidget {
-  final String uid;
-  const ChatScreen({Key? key, required this.uid}) : super(key: key);
+  // ChatRoom -> ClientId_AdminId -> Chats
+
+  final String uidClient;
+  final String uidAdmin;
+  final bool isAdmin;
+
+  const ChatScreen({
+    Key? key,
+    required this.uidClient,
+    required this.uidAdmin,
+    required this.isAdmin,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +26,16 @@ class ChatScreen extends StatelessWidget {
         body: Column(
           children: [
             Expanded(
-              child: Messages(uid: uid),
+              child: Messages(
+                uidClient: uidClient,
+                uidAdmin: uidAdmin,
+                isAdmin: isAdmin,
+              ),
             ),
-            const NewMessage(),
+            NewMessage(
+              uidClient: uidClient,
+              uidAdmin: uidAdmin,
+            ),
           ],
         ),
       ),

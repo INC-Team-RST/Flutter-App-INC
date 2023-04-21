@@ -7,9 +7,16 @@ import '../features/files/file_home.dart';
 import '../features/files/file_home_shared_user.dart';
 
 class BottomBar extends StatefulWidget {
-  const BottomBar({required this.adminID});
+  const BottomBar({
+    Key? key,
+    required this.adminID,
+    required this.uidClient,
+    required this.uidAdmin,
+  }) : super(key: key);
 
   final int adminID;
+  final String uidClient;
+  final String uidAdmin;
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -29,12 +36,18 @@ class _BottomBarState extends State<BottomBar> {
       AppointmentStatus(
         adminId: widget.adminID,
       ),
-      ChatScreen(uid: FirebaseAuth.instance.currentUser!.uid.toString()),
+      ChatScreen(
+        uidClient: widget.uidClient,
+        uidAdmin: widget.uidAdmin,
+        isAdmin: false,
+      ),
       // VideoUserScreen(),
       FileHome(
         adminId: widget.adminID,
       ),
-      UserMyDocs(adminId: widget.adminID)
+      UserMyDocs(
+        adminId: widget.adminID,
+      ),
       // const LawsAndActs(),
     ];
   }

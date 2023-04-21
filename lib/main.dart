@@ -1,4 +1,6 @@
-import 'package:flutter/foundation.dart';
+// ignore_for_file: depend_on_referenced_packages
+
+import 'package:darkknightspict/models/user.dart';
 
 import 'features/login/widgets/select_admin.dart';
 import 'features/login/admin_widgets/user_list.dart';
@@ -27,6 +29,12 @@ Future main() async {
 
   final String? token = await storage.read(key: 'user_access_token');
   final String? userType = await storage.read(key: 'user_type');
+  // LocalUser logic for user
+  LocalUser.uid =
+      userType == 'user' ? FirebaseAuth.instance.currentUser!.uid : null;
+
+  ClientUser.uidClient =
+      userType == 'user' ? FirebaseAuth.instance.currentUser!.email : null;
 
   // if (kDebugMode) {
   PluginManager.instance

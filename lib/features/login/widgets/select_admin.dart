@@ -104,6 +104,8 @@ class _SelectAdminState extends State<SelectAdmin> {
                       MaterialPageRoute(
                         builder: (context) => BottomBar(
                           adminID: admins[index].id,
+                          uidAdmin: admins[index].emailId,
+                          uidClient: ClientUser.uidClient!,
                         ),
                       ),
                     );
@@ -134,6 +136,8 @@ class _SelectAdminState extends State<SelectAdmin> {
                           MaterialPageRoute(
                             builder: (context) => BottomBar(
                               adminID: admins[index].id,
+                              uidAdmin: admins[index].uid,
+                              uidClient: ClientUser.uidClient!,
                             ),
                           ),
                         );

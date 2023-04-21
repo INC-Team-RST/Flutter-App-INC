@@ -73,7 +73,8 @@ class _UsersScreenState extends State<UsersScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => BottomBarCA(
-                          UserId: snapshot.data[index]['id'],
+                          userId: snapshot.data[index]['id'],
+                          uidClient: snapshot.data[index]['email'],
                         ),
                       ),
                     );

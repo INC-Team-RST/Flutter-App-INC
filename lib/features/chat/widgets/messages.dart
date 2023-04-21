@@ -1,23 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/user.dart';
 import 'message_bubble.dart';
 
 class Messages extends StatelessWidget {
-  final String uid;
-  const Messages({Key? key, required this.uid}) : super(key: key);
+  final String uidClient;
+  final String uidAdmin;
+  final bool isAdmin;
+
+  const Messages({
+    Key? key,
+    required this.uidClient,
+    required this.uidAdmin,
+    required this.isAdmin,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // FirebaseAuth auth = FirebaseAuth.instance;
     return StreamBuilder(
+      // ChatRoom -> ClientId_AdminId -> Chats
       stream: FirebaseFirestore.instance
-          .collection('Users')
-          .doc(uid)
+          .collection('ChatRoom')
+          .doc("${uidClient}_$uidAdmin")
           .collection('Chats')
           .orderBy('createdAt', descending: true)
           .snapshots(),
+
       builder: (ctx, AsyncSnapshot chatSnapshot) {
         if (chatSnapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -30,12 +39,12 @@ class Messages extends StatelessWidget {
           reverse: true,
           itemBuilder: (ctx, index) {
             bool isMe = false;
-            if (LocalUser.uid != null) {
-              if (chatDocs[index]['uid'] == uid) {
+            if (isAdmin) {
+              if (chatDocs[index]['uid'] == uidAdmin) {
                 isMe = true;
               }
             } else {
-              if (chatDocs[index]['uid'] != uid) {
+              if (chatDocs[index]['uid'] == uidClient) {
                 isMe = true;
               }
             }

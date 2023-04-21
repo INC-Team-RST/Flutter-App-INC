@@ -1,15 +1,18 @@
+import 'package:darkknightspict/features/chat/chat_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../features/appointments/admin_appointments.dart';
-import '../features/chat/chat_home.dart';
 import '../features/files/file_home_admin.dart';
 import '../features/files/file_home_shared_admin.dart';
 
 class BottomBarCA extends StatefulWidget {
   // ignore: use_key_in_widget_constructors
-  BottomBarCA({required this.UserId});
+  const BottomBarCA({required this.userId, required this.uidClient});
 
-  int UserId;
+  final String uidClient;
+
+  final int userId;
 
   @override
   State<BottomBarCA> createState() => _BottomBarCAState();
@@ -31,19 +34,22 @@ class _BottomBarCAState extends State<BottomBarCA> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     pages = <Widget>[
       // AppointmentsHomeAdmin(),
       ClientStatus(
-        UserId: widget.UserId,
+        UserId: widget.userId,
       ),
       // VideoAdminScreen(),
-      ChatHome(),
-      FileHomeAdmin(
-        userId: widget.UserId,
+      ChatScreen(
+        isAdmin: true,
+        uidAdmin: FirebaseAuth.instance.currentUser!.email!,
+        uidClient: widget.uidClient,
       ),
-      GetSharedAdmin(userId: widget.UserId)
+      FileHomeAdmin(
+        userId: widget.userId,
+      ),
+      GetSharedAdmin(userId: widget.userId)
       // LawsAndActs(),
     ];
   }
