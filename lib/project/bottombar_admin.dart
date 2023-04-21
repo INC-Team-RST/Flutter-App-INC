@@ -1,3 +1,4 @@
+import 'package:darkknightspict/features/files/file_home_shared_admin.dart';
 import 'package:darkknightspict/features/laws/laws.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +41,10 @@ class _BottomBarCAState extends State<BottomBarCA> {
         UserId: widget.UserId,
       ),
       ChatHome(),
-      FileHomeAdmin(),
+      FileHomeAdmin(
+        userId: widget.UserId,
+      ),
+      GetSharedAdmin(userId: widget.UserId)
       // LawsAndActs(),
     ];
   }
@@ -67,6 +71,10 @@ class _BottomBarCAState extends State<BottomBarCA> {
           BottomNavigationBarItem(
             icon: Icon(Icons.file_copy_outlined),
             label: 'Files',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.file_copy_outlined),
+            label: 'Shared Files',
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.book_outlined),

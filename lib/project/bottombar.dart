@@ -1,3 +1,4 @@
+import 'package:darkknightspict/features/files/file_home_shared_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ int pageIndex = 0;
 class _BottomBarState extends State<BottomBar> {
   PageController _pageController = PageController();
   List<Widget> pages = [];
-  
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +31,10 @@ class _BottomBarState extends State<BottomBar> {
         AdminId: widget.adminID,
       ),
       ChatScreen(uid: FirebaseAuth.instance.currentUser!.uid.toString()),
-      const FileHome(),
+      FileHome(
+        adminId: widget.adminID,
+      ),
+      UserMyDocs(adminId: widget.adminID)
       // const LawsAndActs(),
     ];
   }
@@ -62,6 +66,10 @@ class _BottomBarState extends State<BottomBar> {
           BottomNavigationBarItem(
             icon: Icon(Icons.file_copy_outlined),
             label: 'Files',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.file_copy_outlined),
+            label: 'Shared Files',
           ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.book_outlined),

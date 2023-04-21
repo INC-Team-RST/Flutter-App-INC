@@ -45,7 +45,7 @@ class _FileAdminState extends State<FileAdmin> {
     dio.options.headers['Authorization'] = 'Bearer $token';
 
     Response response =
-        await dio.get("https://client-hive.onrender.com/api/admin/document");
+        await dio.get("https://client-hive.onrender.com/api/admin/mydocument");
     log(response.toString());
     log(response.data.toString());
     return response.data;
