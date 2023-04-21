@@ -1,20 +1,17 @@
+// ignore_for_file: unnecessary_null_comparison, use_build_context_synchronously
+
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:darkknightspict/models/user.dart';
-import 'package:darkknightspict/project/bottombar.dart';
-import 'package:darkknightspict/project/drawer.dart';
+import '../../../project/drawer.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 DateTime combine(DateTime date, TimeOfDay? time) => DateTime(
     date.year, date.month, date.day, time?.hour ?? 0, time?.minute ?? 0);
 
 class AppointmentsHome extends StatefulWidget {
-  AppointmentsHome({required this.adminId});
+  const AppointmentsHome({Key? key, required this.adminId}) : super(key: key);
 
   final int adminId;
 
@@ -274,7 +271,7 @@ class _AppointmentsHomeState extends State<AppointmentsHome> {
                                     .toIso8601String();
 
                             var dateObj = combine(appointmentDateTime,
-                                    TimeOfDay(hour: 0, minute: 0))
+                                    const TimeOfDay(hour: 0, minute: 0))
                                 .toIso8601String();
 
                             log(startTimeAppointment);

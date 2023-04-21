@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:darkknightspict/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../../models/user.dart';
 import '../../../project/bottombar.dart';
 
 class SelectCA extends StatefulWidget {

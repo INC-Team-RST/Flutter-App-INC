@@ -1,26 +1,20 @@
 import 'dart:developer';
 
-import 'package:darkknightspict/features/video/admin_video_home.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:googleapis_auth/auth_io.dart';
 import 'package:intl/intl.dart';
 
 import '../../project/drawer.dart';
 import '../video/user_video_home.dart';
 import 'widgets/slot_booking_widget.dart';
 
-import 'package:googleapis_auth/googleapis_auth.dart';
-import 'package:googleapis/calendar/v3.dart' as calendar;
-
 const storage = FlutterSecureStorage();
 
 class AppointmentStatus extends StatefulWidget {
-  const AppointmentStatus({Key? key, required this.AdminId}) : super(key: key);
-
-  final int AdminId;
+  final int adminId;
+  const AppointmentStatus({Key? key, required this.adminId}) : super(key: key);
 
   @override
   State<AppointmentStatus> createState() => _AppointmentStatusState();
@@ -44,15 +38,11 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
     String? token = await storage.read(key: 'user_access_token');
 
     final Dio dio = Dio();
-
     log(token!.toString());
-
     dio.options.headers['Authorization'] = 'Bearer $token';
 
-    print(widget.AdminId.toString());
-
     Response response = await dio.get(
-        "https://client-hive.onrender.com/api/user/appointment/${widget.AdminId}");
+        "https://client-hive.onrender.com/api/user/appointment/${widget.adminId}");
 
     log(response.toString());
 
@@ -61,7 +51,6 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     appointments = getAppointments();
   }
@@ -78,7 +67,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
               context,
               MaterialPageRoute(
                 builder: (context) => AppointmentsHome(
-                  adminId: widget.AdminId,
+                  adminId: widget.adminId,
                 ),
               ),
             ).then((value) => setState(() {
@@ -172,8 +161,6 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                         future: appointments,
                         builder: (context, snapshot) {
                           if (snapshot.hasData && snapshot.data != null) {
-                            print(snapshot.data!.length.toString());
-
                             return snapshot.data!.isEmpty
                                 ? const Center(
                                     child: Text(
@@ -214,11 +201,6 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                                   "yyyy-MM-dd' 'HH:mm:ss.SSS'Z'")
                                               .format(DateTime.now()));
 
-                                      print(startTime);
-                                      print(endTime);
-                                      print(currentTime);
-                                      print(currentTime.isBefore(endTime));
-
                                       return currentTime.isBefore(endTime)
                                           ? Container(
                                               margin:
@@ -228,7 +210,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                               decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
-                                                color: Colors.white,
+                                                color: const Color(0xff403ffc),
                                               ),
                                               child: Padding(
                                                 padding:
@@ -239,7 +221,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                                     style: TextStyle(
                                                       fontFamily: 'Lato',
                                                       fontSize: 22,
-                                                      color: Colors.black54,
+                                                      color: Colors.black,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                     ),
@@ -266,7 +248,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                                     style: TextStyle(
                                                       fontFamily: 'Lato',
                                                       fontSize: 22,
-                                                      color: Colors.black54,
+                                                      color: Colors.black,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                     ),
@@ -294,7 +276,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                                     style: TextStyle(
                                                       fontFamily: 'Lato',
                                                       fontSize: 22,
-                                                      color: Colors.black54,
+                                                      color: Colors.black,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                     ),
@@ -322,7 +304,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                                     style: TextStyle(
                                                       fontFamily: 'Lato',
                                                       fontSize: 22,
-                                                      color: Colors.black54,
+                                                      color: Colors.black,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                     ),
@@ -343,7 +325,6 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                                           'ACCEPTED'
                                                       ? GestureDetector(
                                                           onTap: () {
-                                                            
                                                             if (currentTime.isAfter(
                                                                     startTime) &&
                                                                 currentTime
@@ -372,7 +353,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           10),
-                                                              color: Color(
+                                                              color: const Color(
                                                                   0xff5ad0b5),
                                                             ),
                                                             margin:
@@ -387,7 +368,7 @@ class _AppointmentStatusState extends State<AppointmentStatus> {
                                                                 mainAxisAlignment:
                                                                     MainAxisAlignment
                                                                         .spaceAround,
-                                                                children: [
+                                                                children: const [
                                                                   Text(
                                                                     "Go to Video Call",
                                                                     style:

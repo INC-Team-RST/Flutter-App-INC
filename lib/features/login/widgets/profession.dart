@@ -1,6 +1,6 @@
-import 'package:darkknightspict/api/admin_api.dart';
-import 'package:darkknightspict/features/login/admin_widgets/user_list.dart';
-import 'package:darkknightspict/project/bottombar_admin.dart';
+import '../../../api/admin_api.dart';
+import '../admin_widgets/user_list.dart';
+import '../../../project/bottombar_admin.dart';
 import 'package:flutter/material.dart';
 
 class Profession extends StatefulWidget {

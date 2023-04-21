@@ -1,4 +1,3 @@
-
 class AdminInfo {
   static String? displayName;
   static String? uid;
@@ -6,5 +5,4 @@ class AdminInfo {
   static String? photoURL;
   static bool? isCA;
   static String? email;
-  
 }

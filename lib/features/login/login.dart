@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:darkknightspict/features/login/admin_widgets/user_list.dart';
-import 'package:darkknightspict/features/login/widgets/profession.dart';
-import 'package:darkknightspict/features/login/widgets/select_admin.dart';
+import 'admin_widgets/user_list.dart';
+import 'widgets/profession.dart';
+import 'widgets/select_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 

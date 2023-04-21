@@ -7,18 +7,18 @@ class AdminData {
   String photoURL;
   String phone;
 
-  AdminData(
-      {required this.id,
-      required this.emailId,
-      required this.displayName,
-      required this.uid,
-      required this.profession,
-      required this.photoURL,
-      required this.phone});
+  AdminData({
+    required this.id,
+    required this.emailId,
+    required this.displayName,
+    required this.uid,
+    required this.profession,
+    required this.photoURL,
+    required this.phone,
+  });
 }
 
-
-class AdminAppointment{
+class AdminAppointment {
   int id;
   int userId;
   int adminId;

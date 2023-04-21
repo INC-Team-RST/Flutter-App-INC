@@ -59,9 +59,10 @@ Future<void> loginAdmin({required String uid, required String token}) async {
   }
 }
 
-Future<void> updateProfession({required String profession, required String accessToken}) async {
+Future<void> updateProfession(
+    {required String profession, required String accessToken}) async {
   dio.options.headers['content-Type'] = 'application/json';
-  dio.options.headers['Authorization']='Bearer $accessToken';
+  dio.options.headers['Authorization'] = 'Bearer $accessToken';
   try {
     Response response = await dio.patch(
         'https://client-hive.onrender.com/api/admin/update',
@@ -72,16 +73,15 @@ Future<void> updateProfession({required String profession, required String acces
   }
 }
 
-Future<void> adminlogout(String accessToken) async{
-   
+Future<void> adminlogout(String accessToken) async {
   dio.options.headers['content-Type'] = 'application/json';
-  dio.options.headers['Authorization']='Bearer $accessToken';
-  try{
-    Response response = await dio.post('https://client-hive.onrender.com/api/admin/logout', data: {"token": accessToken});
+  dio.options.headers['Authorization'] = 'Bearer $accessToken';
+  try {
+    Response response = await dio.post(
+        'https://client-hive.onrender.com/api/admin/logout',
+        data: {"token": accessToken});
     log(response.toString());
-  } catch(e){
+  } catch (e) {
     log(e.toString());
   }
 }
-
-

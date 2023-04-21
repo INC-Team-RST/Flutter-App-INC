@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import './date_utils.dart';
-import './clean_calendar_event.dart';
 import "package:intl/intl.dart";
+
+import 'clean_calendar_event.dart';
+import 'date_utils.dart';
 
 /// [CalendarTile] is responsible for displaying one calendar event entry below
 /// the week view or the month view. The events are displayed in a list of [CalendarTile].
@@ -41,7 +42,8 @@ class CalendarTile extends StatelessWidget {
   final Color? eventColor;
   final Color? eventDoneColor;
 
-  const CalendarTile({Key? key,
+  const CalendarTile({
+    Key? key,
     this.onDateSelected,
     this.date,
     this.child,

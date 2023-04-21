@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:darkknightspict/api/admin_api.dart';
-import 'package:darkknightspict/api/user_api.dart';
-import 'package:darkknightspict/models/admin_info.dart';
+import '../api/admin_api.dart';
+import '../api/user_api.dart';
+import '../models/admin_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';

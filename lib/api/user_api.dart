@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:darkknightspict/models/admin.dart';
+import '../models/admin.dart';
 import 'package:dio/dio.dart';
 
 Dio dio = Dio();
@@ -135,7 +135,7 @@ Future<List<AdminData>> getAllAdmins(
 
 Future<void> addAdminData(int id, String token) async {
   try {
-     dio.options.headers['Authorization'] = 'Bearer $token';
+    dio.options.headers['Authorization'] = 'Bearer $token';
     dio.options.headers['content-Type'] = 'application/json';
     Response response = await dio.post(
         'https://client-hive.onrender.com/api/user/admins',
@@ -146,14 +146,16 @@ Future<void> addAdminData(int id, String token) async {
   }
 }
 
-Future<List<AdminAppointment>> getAdminAppointments(int id, String accessToken) async {
+Future<List<AdminAppointment>> getAdminAppointments(
+    int id, String accessToken) async {
   List<AdminAppointment> appointments = [];
-  try{
+  try {
     dio.options.headers['content-Type'] = 'application/json';
-    dio.options.headers['Authorization']='Bearer $accessToken';
-    Response response = await dio.get('https://client-hive.onrender.com/api/admin/appointment/$id');
+    dio.options.headers['Authorization'] = 'Bearer $accessToken';
+    Response response = await dio
+        .get('https://client-hive.onrender.com/api/admin/appointment/$id');
     log(response.data.toString());
-    for(var data in response.data){
+    for (var data in response.data) {
       AdminAppointment appointment = AdminAppointment(
         id: data['id'],
         userId: data['userId'],
@@ -171,7 +173,7 @@ Future<List<AdminAppointment>> getAdminAppointments(int id, String accessToken) 
     }
     log(appointments.toString());
     return appointments;
-  }catch(e){
+  } catch (e) {
     log(e.toString());
     throw Exception(e);
   }

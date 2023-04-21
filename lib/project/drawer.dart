@@ -1,7 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:darkknightspict/api/user_api.dart';
-import 'package:darkknightspict/models/admin_info.dart';
-import 'package:darkknightspict/models/user.dart';
+import '../api/user_api.dart';
+import '../models/admin_info.dart';
+import '../models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,7 +9,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:developer';
 import '../features/login/login.dart';
 import 'developers.dart';
-final storage= const FlutterSecureStorage();
+
+final storage = const FlutterSecureStorage();
+
 class NavDrawer extends StatefulWidget {
   const NavDrawer({Key? key}) : super(key: key);
 
@@ -18,8 +20,6 @@ class NavDrawer extends StatefulWidget {
 }
 
 class _NavDrawerState extends State<NavDrawer> {
-
-  
   final user = FirebaseAuth.instance.currentUser;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 

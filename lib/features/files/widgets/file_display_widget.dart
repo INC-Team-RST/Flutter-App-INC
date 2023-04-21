@@ -35,7 +35,8 @@ class _AdminUserFilesState extends State<AdminUserFiles> {
         return FloatingActionButton.extended(
           onPressed: () async {
             await selectFile();
-            await uploadFile(context, documentOfUID!,"admin", type: "CADocument");
+            await uploadFile(context, documentOfUID!, "admin",
+                type: "CADocument");
           },
           label: const Text(
             'Upload',

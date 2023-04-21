@@ -1,17 +1,16 @@
 import 'dart:core';
 import 'dart:developer';
 
-import 'package:darkknightspict/api/constants.dart';
-import 'package:darkknightspict/api/user_api.dart';
-import 'package:darkknightspict/models/admin.dart';
-import 'package:darkknightspict/packages/calender/flutter_clean_calendar.dart';
+import '../../api/constants.dart';
+import '../../api/user_api.dart';
+import '../../models/admin.dart';
+import '../../packages/calender/flutter_clean_calendar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 
 import '../video/admin_video_home.dart';
-import '../video/user_video_home.dart';
 
 const storage = FlutterSecureStorage();
 
@@ -39,7 +38,6 @@ class _ClientStatusState extends State<ClientStatus> {
     String? admintoken = await storage.read(key: 'admin_access_token');
     log(admintoken.toString());
     var data = await getAdminAppointments(widget.UserId, admintoken!);
-    print(data.toString());
     return data;
   }
 
@@ -148,10 +146,6 @@ class _ClientStatusState extends State<ClientStatus> {
                                   DateTime currentTime = DateTime.parse(
                                       DateFormat("yyyy-MM-dd' 'HH:mm:ss.SSS'Z'")
                                           .format(DateTime.now()));
-                                  print(startTime);
-                                  print(endTime);
-                                  print(currentTime);
-                                  print(currentTime.isBefore(endTime));
 
                                   return currentTime.isBefore(endTime)
                                       ? Padding(
@@ -282,8 +276,8 @@ class _ClientStatusState extends State<ClientStatus> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10),
-                                                        color:
-                                                            Color(0xff5ad0b5),
+                                                        color: const Color(
+                                                            0xff5ad0b5),
                                                       ),
                                                       margin:
                                                           const EdgeInsets.only(
@@ -295,7 +289,7 @@ class _ClientStatusState extends State<ClientStatus> {
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
                                                                   .spaceAround,
-                                                          children: [
+                                                          children: const [
                                                             Text(
                                                               "Go to Video Call",
                                                               style: TextStyle(
@@ -611,7 +605,8 @@ class _ClientStatusState extends State<ClientStatus> {
                                                               "status":
                                                                   "REJECTED"
                                                             });
-                                                        log(response.toString());
+                                                        log(response
+                                                            .toString());
 
                                                         setState(() {
                                                           getAppointments();

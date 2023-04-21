@@ -78,10 +78,10 @@ class _FileAdminState extends State<FileAdmin> {
             Icons.upload,
           ),
         ),
+        backgroundColor: const Color(0xff010413),
         body: FutureBuilder<List>(
           future: docs,
           builder: (context, snapshot) {
-            print(snapshot.data);
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -100,8 +100,6 @@ class _FileAdminState extends State<FileAdmin> {
                   ),
                 );
               }
-
-              print(data[0]["url"]);
 
               return ListView.builder(
                   itemCount: data.length,

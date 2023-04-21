@@ -1,4 +1,4 @@
-import 'package:darkknightspict/features/files/file_home_shared_user.dart';
+import '../features/files/file_home_shared_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +28,7 @@ class _BottomBarState extends State<BottomBar> {
     _pageController = PageController(initialPage: pageIndex);
     pages = [
       AppointmentStatus(
-        AdminId: widget.adminID,
+        adminId: widget.adminID,
       ),
       ChatScreen(uid: FirebaseAuth.instance.currentUser!.uid.toString()),
       // VideoUserScreen(),

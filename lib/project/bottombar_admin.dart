@@ -1,12 +1,9 @@
-import 'package:darkknightspict/features/video/admin_video_home.dart';
-import 'package:darkknightspict/features/files/file_home_shared_admin.dart';
-import 'package:darkknightspict/features/laws/laws.dart';
 import 'package:flutter/material.dart';
 
 import '../features/appointments/admin_appointments.dart';
-import '../features/files/file_home_admin.dart';
-
 import '../features/chat/chat_home.dart';
+import '../features/files/file_home_admin.dart';
+import '../features/files/file_home_shared_admin.dart';
 
 class BottomBarCA extends StatefulWidget {
   // ignore: use_key_in_widget_constructors

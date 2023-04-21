@@ -1,29 +1,29 @@
 import 'dart:developer';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:darkknightspict/api/user_api.dart';
-import 'package:darkknightspict/features/login/login.dart';
-import 'package:darkknightspict/features/login/widgets/filter_admins.dart';
-import 'package:darkknightspict/models/admin.dart';
-import 'package:darkknightspict/models/admin_info.dart';
-import 'package:darkknightspict/models/user.dart';
-import 'package:darkknightspict/project/bottombar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-final storage = const FlutterSecureStorage();
+import '../../../api/user_api.dart';
+import '../../../models/admin.dart';
+import '../../../models/admin_info.dart';
+import '../../../models/user.dart';
+import '../../../project/bottombar.dart';
+import '../login.dart';
+import 'filter_admins.dart';
 
 class SelectAdmin extends StatefulWidget {
-  String token;
-  SelectAdmin({Key? key, required this.token}) : super(key: key);
+  final String token;
+  const SelectAdmin({Key? key, required this.token}) : super(key: key);
 
   @override
   State<SelectAdmin> createState() => _SelectAdminState();
 }
 
 class _SelectAdminState extends State<SelectAdmin> {
+  final storage = const FlutterSecureStorage();
   late Future admins;
   final user = FirebaseAuth.instance.currentUser;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -80,6 +80,7 @@ class _SelectAdminState extends State<SelectAdmin> {
               fontFamily: 'Lato'),
         ),
       ),
+      backgroundColor: const Color(0xff010413),
       body: FutureBuilder<List<AdminData>>(
         future: getAdmin(widget.token),
         builder: (context, snapshot) {
@@ -92,22 +93,58 @@ class _SelectAdminState extends State<SelectAdmin> {
             }
             List<AdminData> admins = snapshot.data!;
             log(admins[0].id.toString());
-            return ListView.builder(
+            return ListView.separated(
               itemCount: admins.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BottomBar(
-                                  adminID: admins[index].id,
-                                )));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BottomBar(
+                          adminID: admins[index].id,
+                        ),
+                      ),
+                    );
                   },
                   child: ListTile(
-                    title: Text(admins[index].displayName),
-                    subtitle: Text(admins[index].profession),
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(admins[index].photoURL),
+                    ),
+                    title: Text(
+                      admins[index].displayName,
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${admins[index].profession} | ${admins[index].emailId}',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.open_in_new_rounded),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BottomBar(
+                              adminID: admins[index].id,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const Divider(
+                  height: 1,
+                  thickness: 1,
                 );
               },
             );

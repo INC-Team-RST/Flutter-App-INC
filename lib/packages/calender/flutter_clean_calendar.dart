@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import './simple_gesture_detector.dart';
-import './calendar_tile.dart';
-import './clean_calendar_event.dart';
-import './date_utils.dart';
+import 'simple_gesture_detector.dart';
+import 'calendar_tile.dart';
+import 'clean_calendar_event.dart';
+import 'date_utils.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -10,7 +10,8 @@ import 'package:intl/date_symbol_data_local.dart';
 export './clean_calendar_event.dart';
 
 typedef DayBuilder = Function(BuildContext context, DateTime day);
-typedef EventListBuilder = Function(BuildContext context, List<CleanCalendarEvent> events);
+typedef EventListBuilder = Function(
+    BuildContext context, List<CleanCalendarEvent> events);
 
 class Range {
   final DateTime from;
@@ -93,7 +94,8 @@ class Calendar extends StatefulWidget {
   final Color? bottomBarColor;
   final String? expandableDateFormat;
 
-  const Calendar({Key? key,
+  const Calendar({
+    Key? key,
     this.onMonthChanged,
     this.onDateSelected,
     this.onRangeSelected,
@@ -334,7 +336,8 @@ class _CalendarState extends State<Calendar> {
       return GestureDetector(
         onTap: toggleExpanded,
         child: Container(
-          color: widget.bottomBarColor ?? const Color.fromRGBO(200, 200, 200, 0.2),
+          color:
+              widget.bottomBarColor ?? const Color.fromRGBO(200, 200, 200, 0.2),
           height: 40,
           margin: const EdgeInsets.only(top: 8.0),
           padding: const EdgeInsets.all(0),
@@ -345,12 +348,14 @@ class _CalendarState extends State<Calendar> {
               Text(
                 DateFormat(widget.expandableDateFormat, widget.locale)
                     .format(_selectedDate),
-                style: widget.bottomBarTextStyle ?? const TextStyle(fontSize: 13),
+                style:
+                    widget.bottomBarTextStyle ?? const TextStyle(fontSize: 13),
               ),
               IconButton(
                 onPressed: toggleExpanded,
                 iconSize: 25.0,
-                padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                 icon: isExpanded
                     ? Icon(
                         Icons.arrow_drop_up,
@@ -702,9 +707,11 @@ class ExpansionCrossFade extends StatelessWidget {
   final bool isExpanded;
 
   const ExpansionCrossFade(
-      {Key? key, required this.collapsed,
+      {Key? key,
+      required this.collapsed,
       required this.expanded,
-      required this.isExpanded}) : super(key: key);
+      required this.isExpanded})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

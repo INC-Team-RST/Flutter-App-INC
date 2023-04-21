@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:darkknightspict/api/user_api.dart';
-import 'package:darkknightspict/features/login/widgets/select_admin.dart';
-import 'package:darkknightspict/models/admin.dart';
+import '../../../api/user_api.dart';
+import 'select_admin.dart';
+import '../../../models/admin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 

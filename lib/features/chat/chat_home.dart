@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:darkknightspict/api/admin_api.dart';
-import 'package:darkknightspict/models/select_client_details.dart';
-import 'package:darkknightspict/features/login/login.dart';
+import '../../api/admin_api.dart';
+import '../../models/select_client_details.dart';
+import '../login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -22,7 +22,7 @@ class ChatHome extends StatefulWidget {
 }
 
 class _ChatHomeState extends State<ChatHome> {
-  final storage= const FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
