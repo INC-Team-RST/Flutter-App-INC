@@ -1,17 +1,17 @@
 import 'dart:developer';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'admin_appointments.dart';
-import 'all_users.dart';
-import '../login.dart';
-import '../../../models/admin_info.dart';
-import '../../../models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../api/admin_api.dart';
+import '../../../models/admin_info.dart';
+import '../../../models/user.dart';
+import '../login.dart';
+import 'admin_appointments.dart';
+import 'all_users.dart';
 import 'file_home.dart';
 
 class UserList extends StatefulWidget {

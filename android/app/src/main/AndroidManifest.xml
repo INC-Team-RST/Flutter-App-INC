@@ -13,7 +13,7 @@
     </intent>
   </queries>
    <application
-        android:label="Cloud Accounting"
+        android:label="Client Hive"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

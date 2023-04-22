@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'simple_gesture_detector.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+
 import 'calendar_tile.dart';
 import 'clean_calendar_event.dart';
 import 'date_utils.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'simple_gesture_detector.dart';
 
 // Export NeatCleanCalendarEvent for using it in the application
 export './clean_calendar_event.dart';
